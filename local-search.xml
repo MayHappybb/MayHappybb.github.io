@@ -8,7 +8,7 @@
     <link href="/2021/09/15/Ubuntu%E8%B0%83%E6%95%B4%E6%97%B6%E5%8C%BA/"/>
     <url>/2021/09/15/Ubuntu%E8%B0%83%E6%95%B4%E6%97%B6%E5%8C%BA/</url>
     
-    <content type="html"><![CDATA[<p>引用<a href="https://blog.csdn.net/zhengchaooo/article/details/79500032">csdn</a>评论下的方法：<br><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">root@ubuntu:&#x2F;# timedatectl set-timezone Asia&#x2F;Shanghai<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><br>即可。</p>]]></content>
+    <content type="html"><![CDATA[<p>查看当前时间：<br><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">root@ubuntu:&#x2F;# date -R<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><br><img src="/img/Ubuntu调整时区/1.PNG" alt=""><br>引用<a href="https://blog.csdn.net/zhengchaooo/article/details/79500032">csdn评论</a>下的方法：<br><div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">root@ubuntu:&#x2F;# timedatectl set-timezone Asia&#x2F;Shanghai<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><br><img src="/img/Ubuntu调整时区/2.PNG" alt=""><br>即可。</p>]]></content>
     
     
     
