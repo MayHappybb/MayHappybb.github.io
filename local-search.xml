@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Ubuntu调整时区</title>
+    <link href="/2021/09/15/Ubuntu%E8%B0%83%E6%95%B4%E6%97%B6%E5%8C%BA/"/>
+    <url>/2021/09/15/Ubuntu%E8%B0%83%E6%95%B4%E6%97%B6%E5%8C%BA/</url>
+    
+    <content type="html"><![CDATA[<p>引用<a href="https://blog.csdn.net/zhengchaooo/article/details/79500032">csdn</a>评论下的方法：<br><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">timedatectl</span> <span class="hljs-built_in">set-timezone</span> <span class="hljs-string">Asia</span>/<span class="hljs-string">Shanghai</span><br></code></pre></td></tr></table></figure><br>即可。</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>hello world!</title>
     <link href="/2021/09/15/hello-world/"/>
     <url>/2021/09/15/hello-world/</url>
