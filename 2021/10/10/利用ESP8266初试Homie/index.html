@@ -236,15 +236,21 @@
             <h1 style="display: none">利用ESP8266初试Homie</h1>
             
             <div class="markdown-body">
-              <h2 id="利用ESP8266初试Homie"><a href="#利用ESP8266初试Homie" class="headerlink" title="利用ESP8266初试Homie"></a>利用ESP8266初试<a target="_blank" rel="noopener" href="https://github.com/homieiot/convention">Homie</a></h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>​    什么是Homie？引用<a target="_blank" rel="noopener" href="https://homieiot.github.io/#">官方的说法</a>：</p>
+              <h2 id="利用esp8266初试homie"><a class="markdownIt-Anchor" href="#利用esp8266初试homie"></a> 利用ESP8266初试<a target="_blank" rel="noopener" href="https://github.com/homieiot/convention">Homie</a></h2>
+<h3 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h3>
+<p>​	什么是Homie？引用<a target="_blank" rel="noopener" href="https://homieiot.github.io/#">官方的说法</a>：</p>
 <blockquote>
 <p>Homie 约定定义了 IoT 设备和服务如何在 MQTT 代理上宣布自身及其数据的标准化方式。因此，它是 MQTT 协议之上的一个关键方面，用于自动发现、配置和使用设备和服务。</p>
 </blockquote>
 <p>而<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266">Homie for ESP8266 / ESP32</a>则是利用ESP8266或ESP32实现Homie。</p>
-<h3 id="1-将Homie刷入ESP8266"><a href="#1-将Homie刷入ESP8266" class="headerlink" title="1.将Homie刷入ESP8266"></a>1.将Homie刷入ESP8266</h3><p>​    Homie的安装支持Arduino IDE和PlatformIO，这里使用前者。</p>
-<h4 id="1-1下载-zip库"><a href="#1-1下载-zip库" class="headerlink" title="1.1下载.zip库"></a>1.1下载.zip库</h4><p>​    从<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266/releases">官方发行</a>处下载所需版本，这里选择3.0版本</p>
-<h4 id="1-2安装Homie库"><a href="#1-2安装Homie库" class="headerlink" title="1.2安装Homie库"></a>1.2安装Homie库</h4><p>​    打开Arduino IDE，选中<strong>项目</strong>$\rarr$<strong>加载库</strong>$\rarr$<strong>添加.zip库</strong>，在弹出的窗口中选择上一步下载的.zip库，即可完成Homie库的安装。</p>
-<h4 id="1-3安装相关依赖"><a href="#1-3安装相关依赖" class="headerlink" title="1.3安装相关依赖"></a>1.3安装相关依赖</h4><p>​    根据官方文档，Homie所依赖的库有以下5个：</p>
+<h3 id="1将homie刷入esp8266"><a class="markdownIt-Anchor" href="#1将homie刷入esp8266"></a> 1.将Homie刷入ESP8266</h3>
+<p>​	Homie的安装支持Arduino IDE和PlatformIO，这里使用前者。</p>
+<h4 id="11下载zip库"><a class="markdownIt-Anchor" href="#11下载zip库"></a> 1.1下载.zip库</h4>
+<p>​	从<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266/releases">官方发行</a>处下载所需版本，这里选择3.0版本</p>
+<h4 id="12安装homie库"><a class="markdownIt-Anchor" href="#12安装homie库"></a> 1.2安装Homie库</h4>
+<p>​	打开Arduino IDE，选中<strong>项目</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>加载库</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>添加.zip库</strong>，在弹出的窗口中选择上一步下载的.zip库，即可完成Homie库的安装。</p>
+<h4 id="13安装相关依赖"><a class="markdownIt-Anchor" href="#13安装相关依赖"></a> 1.3安装相关依赖</h4>
+<p>​	根据官方文档，Homie所依赖的库有以下5个：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/bblanchon/ArduinoJson">ArduinoJson</a> &gt;= 5.0.8</li>
 <li><a target="_blank" rel="noopener" href="https://github.com/thomasfredericks/Bounce2">Bounce2</a></li>
@@ -252,9 +258,10 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/marvinroger/async-mqtt-client">AsyncMqttClient</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/me-no-dev/ESPAsyncWebServer">ESPAsyncWebServer</a></li>
 </ul>
-<p>​    其中ArduinoJson、Bounce2可在Arduino IDE中直接安装：选中<strong>工具</strong>$\rarr$<strong>管理库</strong>，在弹出的库管理器中搜索安装即可（注意需要挂代理），也可使用下述方法安装。</p>
-<p>​    其余几个库需要直接下载安装：点击上述库，跳转至对应GIthub仓库，点击<strong>Code</strong>$\rarr$<strong>Download ZIP</strong>，下载.zip后如1.2节方法安装即可。</p>
-<h4 id="1-4烧录最小代码"><a href="#1-4烧录最小代码" class="headerlink" title="1.4烧录最小代码"></a>1.4烧录最小代码</h4><p>​    安装完所有库后重启Arduino IDE，新建项目，将以下代码粘入：</p>
+<p>​	其中ArduinoJson、Bounce2可在Arduino IDE中直接安装：选中<strong>工具</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>管理库</strong>，在弹出的库管理器中搜索安装即可（注意需要挂代理），也可使用下述方法安装。</p>
+<p>​	其余几个库需要直接下载安装：点击上述库，跳转至对应GIthub仓库，点击<strong>Code</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>Download ZIP</strong>，下载.zip后如1.2节方法安装即可。</p>
+<h4 id="14烧录最小代码"><a class="markdownIt-Anchor" href="#14烧录最小代码"></a> 1.4烧录最小代码</h4>
+<p>​	安装完所有库后重启Arduino IDE，新建项目，将以下代码粘入：</p>
 <div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F;This is the bare minimum needed for Homie for ESP8266 to work correctly.
 #include &lt;Homie.h&gt;
 
@@ -269,73 +276,91 @@ void setup() &#123;
 void loop() &#123;
   Homie.loop();
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
-<p>​    在<strong>工具</strong>$\rarr$<strong>开发板</strong>中选择对应的开发板型号及端口号，然后点击<strong>上传</strong>即可，上传完成后ESP8266进入<code>configuration</code>模式。</p>
+<p>​	在<strong>工具</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>开发板</strong>中选择对应的开发板型号及端口号，然后点击<strong>上传</strong>即可，上传完成后ESP8266进入<code>configuration</code>模式。</p>
 <blockquote>
-<p><code>configuration</code>模式：默认情况下，配置模式为初始模式。 它生成一个 AP 和一个公开 JSON API 的 HTTP 网络服务器。要与之交互，您必须连接到 AP，然后，HTTP 客户端可以获取可用 Wi-Fi 网络的列表并发送配置（如 Wi-Fi SSID、Wi-Fi 密码、一些设置…）。一旦设备收到凭据，它就会启动到正常模式。<br><code>normal</code>模式：正常模式是设备大部分时间的模式。 它连接到 Wi-Fi，连接到 MQTT，它向 Homie 服务器发送初始信息（如本地 IP、当前运行的固件版本……）并订阅所需的 MQTT 主题。 当连接丢失时，它会自动重新连接到 Wi-Fi 和 MQTT。 它还处理OTA。 设备可以通过不同方式返回配置模式（按下按钮或自定义功能，请参阅重置）。<br><code>standalone</code>模式：Homie for ESP8266 has a special mode named standalone. It was a requested feature to implement a way not to boot into configuration mode on initial boot, so that a device can work without being configured first. It was already possible in configuration mode, but the device would spawn an AP which would make it insecure.</p>
+<p><code>configuration</code>模式：默认情况下，配置模式为初始模式。 它生成一个 AP 和一个公开 JSON API 的 HTTP 网络服务器。要与之交互，您必须连接到 AP，然后，HTTP 客户端可以获取可用 Wi-Fi 网络的列表并发送配置（如 Wi-Fi SSID、Wi-Fi 密码、一些设置…）。一旦设备收到凭据，它就会启动到正常模式。<br />
+<code>normal</code>模式：正常模式是设备大部分时间的模式。 它连接到 Wi-Fi，连接到 MQTT，它向 Homie 服务器发送初始信息（如本地 IP、当前运行的固件版本…）并订阅所需的 MQTT 主题。 当连接丢失时，它会自动重新连接到 Wi-Fi 和 MQTT。 它还处理OTA。 设备可以通过不同方式返回配置模式（按下按钮或自定义功能，请参阅重置）。<br />
+<code>standalone</code>模式：Homie for ESP8266 has a special mode named standalone. It was a requested feature to implement a way not to boot into configuration mode on initial boot, so that a device can work without being configured first. It was already possible in configuration mode, but the device would spawn an AP which would make it insecure.</p>
 </blockquote>
-<h3 id="2-初始化Homie"><a href="#2-初始化Homie" class="headerlink" title="2.初始化Homie"></a>2.初始化Homie</h3><p>根据官方解释，这里有3种方法进行<code>configuration</code>模式中的初始化设置，这里将分别介绍。</p>
-<h4 id="2-1三种配置方法"><a href="#2-1三种配置方法" class="headerlink" title="2.1三种配置方法"></a>2.1三种配置方法</h4><h4 id="2-1a利用外部网站进行初始化配置"><a href="#2-1a利用外部网站进行初始化配置" class="headerlink" title="2.1a利用外部网站进行初始化配置"></a>2.1a利用外部网站进行初始化配置</h4><p>​    这种方法是利用外部网站更改http json来进行配置，具体两种方法如下：</p>
-<h5 id="2-1a-1本地部署网站"><a href="#2-1a-1本地部署网站" class="headerlink" title="2.1a.1本地部署网站"></a>2.1a.1本地部署网站</h5><ul>
+<h3 id="2初始化homie"><a class="markdownIt-Anchor" href="#2初始化homie"></a> 2.初始化Homie</h3>
+<p>根据官方解释，这里有3种方法进行<code>configuration</code>模式中的初始化设置，这里将分别介绍。</p>
+<h4 id="21三种配置方法"><a class="markdownIt-Anchor" href="#21三种配置方法"></a> 2.1三种配置方法</h4>
+<h4 id="21a利用外部网站进行初始化配置"><a class="markdownIt-Anchor" href="#21a利用外部网站进行初始化配置"></a> 2.1a利用外部网站进行初始化配置</h4>
+<p>​	这种方法是利用外部网站更改http json来进行配置，具体两种方法如下：</p>
+<h5 id="21a1本地部署网站"><a class="markdownIt-Anchor" href="#21a1本地部署网站"></a> 2.1a.1本地部署网站</h5>
+<ul>
 <li>在<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266-setup/tree/gh-pages">github仓库</a>中将整个仓库的<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266-setup/archive/refs/heads/gh-pages.zip">.zip文件</a>下载</li>
 <li>解压后双击目录内的<code>index.html</code>可以在浏览器中打开此本地网页</li>
 <li>连接wifi到<code>Homie-xxxxxxxxxxxx</code></li>
 <li>按指引进行配置</li>
 </ul>
-<h5 id="2-1a-2缓存在线网站"><a href="#2-1a-2缓存在线网站" class="headerlink" title="2.1a.2缓存在线网站"></a>2.1a.2缓存在线网站</h5><p>​    若不想使用本地网站，也可直接使用在线网站（事实上该网页会自动缓存）。</p>
+<h5 id="21a2缓存在线网站"><a class="markdownIt-Anchor" href="#21a2缓存在线网站"></a> 2.1a.2缓存在线网站</h5>
+<p>​	若不想使用本地网站，也可直接使用在线网站（事实上该网页会自动缓存）。</p>
 <ul>
 <li>接入互联网</li>
 <li>打开<a target="_blank" rel="noopener" href="http://setup.homie-esp8266.marvinroger.fr/">网页</a></li>
 <li>将wifi连接到<code>Homie-xxxxxxxxxxxx</code></li>
 <li>按指引进行配置</li>
 </ul>
-<h4 id="2-1b将网页直接烧录至ESP8266"><a href="#2-1b将网页直接烧录至ESP8266" class="headerlink" title="2.1b将网页直接烧录至ESP8266"></a>2.1b将网页直接烧录至ESP8266</h4><p>​    这种方法将网页直接写入ESP8266中（<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266/tree/develop/data/homie">github仓库</a>），具体操作如下：</p>
-<h5 id="2-1b-1安装ESP8266FS工具"><a href="#2-1b-1安装ESP8266FS工具" class="headerlink" title="2.1b.1安装ESP8266FS工具"></a>2.1b.1安装ESP8266FS工具</h5><blockquote>
+<h4 id="21b将网页直接烧录至esp8266"><a class="markdownIt-Anchor" href="#21b将网页直接烧录至esp8266"></a> 2.1b将网页直接烧录至ESP8266</h4>
+<p>​	这种方法将网页直接写入ESP8266中（<a target="_blank" rel="noopener" href="https://github.com/homieiot/homie-esp8266/tree/develop/data/homie">github仓库</a>），具体操作如下：</p>
+<h5 id="21b1安装esp8266fs工具"><a class="markdownIt-Anchor" href="#21b1安装esp8266fs工具"></a> 2.1b.1安装ESP8266FS工具</h5>
+<blockquote>
 <p><em>ESP8266FS</em> is a tool which integrates into the Arduino IDE. It adds a menu item to <em>Tools</em> menu for uploading the contents of sketch data directory into ESP8266 flash file system.</p>
 </blockquote>
 <ul>
 <li>首先下载此<a target="_blank" rel="noopener" href="https://github.com/esp8266/arduino-esp8266fs-plugin/releases">工具</a>，注意选择<strong>最新</strong>版本下载。</li>
-<li>随后打开Arduino项目文件夹：在Arduino IDE中点击<strong>文件</strong>$\rarr$<strong>首选项</strong>，即可看到项目文件夹位置。</li>
+<li>随后打开Arduino项目文件夹：在Arduino IDE中点击<strong>文件</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>首选项</strong>，即可看到项目文件夹位置。</li>
 <li>打开项目文件夹中的<code>tools</code>目录（若没有则新建一个），将工具解压在此，此时文件路径应该看起来像这样：<code>/项目文件夹/tools/ESP8266FS/tool/esp8266fs.jar</code></li>
 <li>重启Arduino IDE</li>
 <li>完成安装</li>
 </ul>
-<h5 id="2-1b-2上传网页文件"><a href="#2-1b-2上传网页文件" class="headerlink" title="2.1b.2上传网页文件"></a>2.1b.2上传网页文件</h5><p>​    将网页文件上传至ESP8266：</p>
+<h5 id="21b2上传网页文件"><a class="markdownIt-Anchor" href="#21b2上传网页文件"></a> 2.1b.2上传网页文件</h5>
+<p>​	将网页文件上传至ESP8266：</p>
 <ul>
 <li>下载网页文件（<a target="_blank" rel="noopener" href="http://setup.homie-esp8266.marvinroger.fr/ui_bundle.gz">ui_bundle.gz</a>）</li>
-<li>在Arduino IDE中点击<strong>文件</strong>$\rarr$<strong>新建</strong>以创建一个新文件，然后<strong>文件</strong>$\rarr$<strong>保存</strong>，这样就新建了一个<code>项目(sketch)</code></li>
+<li>在Arduino IDE中点击<strong>文件</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>新建</strong>以创建一个新文件，然后<strong>文件</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>保存</strong>，这样就新建了一个<code>项目(sketch)</code></li>
 <li>打开上述项目文件夹，其中应包含一个与文件夹同名的<code>.ino</code>文件，在此新建<code>data</code>文件夹</li>
 <li>在<code>data</code>文件夹内再新建<code>homie</code>文件夹并进入</li>
 <li>将ui_bundle.gz放在<code>homie</code>文件夹内</li>
-<li>在Arduino IDE中选好开发板型号和端口号后，点击<strong>工具</strong>$\rarr$<strong>ESP8266 Sketch Data Upload</strong>即可完成上传</li>
+<li>在Arduino IDE中选好开发板型号和端口号后，点击<strong>工具</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>ESP8266 Sketch Data Upload</strong>即可完成上传</li>
 </ul>
-<p>​    若报错<code>SPIFFS Error: esptool not found!</code>请检查是否在<strong>工具</strong>中存在多个<strong>ESP8266 Sketch Data Upload</strong>，若存在多个（表明可能之前装过且版本过低），请选择最下方的那一个。</p>
-<h5 id="2-1b-3配置"><a href="#2-1b-3配置" class="headerlink" title="2.1b.3配置"></a>2.1b.3配置</h5><ul>
+<p>​	若报错<code>SPIFFS Error: esptool not found!</code>请检查是否在<strong>工具</strong>中存在多个<strong>ESP8266 Sketch Data Upload</strong>，若存在多个（表明可能之前装过且版本过低），请选择最下方的那一个。</p>
+<h5 id="21b3配置"><a class="markdownIt-Anchor" href="#21b3配置"></a> 2.1b.3配置</h5>
+<ul>
 <li>wifi连接到<code>Homie-xxxxxxxxxxxx</code></li>
 <li>浏览器打开<a target="_blank" rel="noopener" href="http://192.168.123.1">http://192.168.123.1</a></li>
 <li>按指引配置</li>
 </ul>
-<h4 id="2-1c利用Android-app进行配置"><a href="#2-1c利用Android-app进行配置" class="headerlink" title="2.1c利用Android app进行配置"></a>2.1c利用Android app进行配置</h4><p>​    利用PhoneGap软件…（待填坑，着急可看<a target="_blank" rel="noopener" href="https://homieiot.github.io/homie-esp8266/docs/3.0.0/configuration/http-json-api/">这里</a>）</p>
-<h4 id="2-2配置指引"><a href="#2-2配置指引" class="headerlink" title="2.2配置指引"></a>2.2配置指引</h4><p>​    …(待填坑)</p>
-<h3 id="3-设置MQTT服务器"><a href="#3-设置MQTT服务器" class="headerlink" title="3.设置MQTT服务器"></a>3.设置MQTT服务器</h3><h4 id="3-1基于docker利用emqttd搭建MQTT服务器"><a href="#3-1基于docker利用emqttd搭建MQTT服务器" class="headerlink" title="3.1基于docker利用emqttd搭建MQTT服务器"></a>3.1基于docker利用emqttd搭建MQTT服务器</h4><h5 id="3-1-1安装docker"><a href="#3-1-1安装docker" class="headerlink" title="3.1.1安装docker"></a>3.1.1安装docker</h5><p>​    在此使用armbian发行版，使用脚本快捷安装docker（参考<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/debian/">官方文档</a>），输入以下命令即可：</p>
+<h4 id="21c利用android-app进行配置"><a class="markdownIt-Anchor" href="#21c利用android-app进行配置"></a> 2.1c利用Android app进行配置</h4>
+<p>​	利用PhoneGap软件…（待填坑，着急可看<a target="_blank" rel="noopener" href="https://homieiot.github.io/homie-esp8266/docs/3.0.0/configuration/http-json-api/">这里</a>）</p>
+<h4 id="22配置指引"><a class="markdownIt-Anchor" href="#22配置指引"></a> 2.2配置指引</h4>
+<p>​	…(待填坑)</p>
+<h3 id="3设置mqtt服务器"><a class="markdownIt-Anchor" href="#3设置mqtt服务器"></a> 3.设置MQTT服务器</h3>
+<h4 id="31基于docker利用emqttd搭建mqtt服务器"><a class="markdownIt-Anchor" href="#31基于docker利用emqttd搭建mqtt服务器"></a> 3.1基于docker利用emqttd搭建MQTT服务器</h4>
+<h5 id="311安装docker"><a class="markdownIt-Anchor" href="#311安装docker"></a> 3.1.1安装docker</h5>
+<p>​	在此使用armbian发行版，使用脚本快捷安装docker（参考<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/debian/">官方文档</a>），输入以下命令即可：</p>
 <div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> remove docker docker-engine docker.io containerd runc	<span class="token comment">#卸载旧版本</span>
 $ <span class="token function">curl</span> -fsSL https://get.docker.com -o get-docker.sh
 $ <span class="token assign-left variable">DRY_RUN</span><span class="token operator">=</span><span class="token number">1</span> <span class="token function">sh</span> ./get-docker.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
-<h5 id="3-1-2测试docker"><a href="#3-1-2测试docker" class="headerlink" title="3.1.2测试docker"></a>3.1.2测试docker</h5><p>​    运行hello-world镜像测试：</p>
+<h5 id="312测试docker"><a class="markdownIt-Anchor" href="#312测试docker"></a> 3.1.2测试docker</h5>
+<p>​	运行hello-world镜像测试：</p>
 <div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> docker run hello-world<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
-<p>​    若docker安装成功，你会看到一条消息：”Hello from Docker!”</p>
-<h5 id="3-1-3安装图形界面portainer"><a href="#3-1-3安装图形界面portainer" class="headerlink" title="3.1.3安装图形界面portainer"></a>3.1.3安装图形界面portainer</h5><p>​    安装portainer便于管理docker：</p>
+<p>​	若docker安装成功，你会看到一条消息：“Hello from Docker!”</p>
+<h5 id="313安装图形界面portainer"><a class="markdownIt-Anchor" href="#313安装图形界面portainer"></a> 3.1.3安装图形界面portainer</h5>
+<p>​	安装portainer便于管理docker：</p>
 <div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> docker pull portainer/portainer
 $ <span class="token function">sudo</span> docker volume create portainer_data
 $ <span class="token function">sudo</span> docker run -d -p <span class="token number">9000</span>:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
-<p>​    若第一步pull失败，可尝试使用国内镜像源（参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/cao-lei/p/14448052.html">这里</a>）：</p>
+<p>​	若第一步pull失败，可尝试使用国内镜像源（参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/cao-lei/p/14448052.html">这里</a>）：</p>
 <ul>
 <li>中国官方镜像站：<a target="_blank" rel="noopener" href="https://registry.docker-cn.com">https://registry.docker-cn.com</a></li>
 <li>网易163镜像：<a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com">http://hub-mirror.c.163.com</a></li>
 <li>中科大镜像：<a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn">https://docker.mirrors.ustc.edu.cn</a></li>
-<li>阿里云镜像：<a href="https://[xxx].mirror.aliyuncs.com">https://[xxx].mirror.aliyuncs.com</a></li>
-<li>DaoCloud镜像：<a href="http://[xxx].m.daocloud.io">http://[xxx].m.daocloud.io</a></li>
+<li>阿里云镜像：https://[xxx].mirror.aliyuncs.com</li>
+<li>DaoCloud镜像：http://[xxx].m.daocloud.io</li>
 </ul>
-<p>​    具体配置如下：</p>
+<p>​	具体配置如下：</p>
 <div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">vim</span> /etc/docker/daemon.json<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
   <span class="token property">"registry-mirrors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -350,42 +375,51 @@ $ <span class="token function">sudo</span> docker run -d -p <span class="token n
 $ systemctl daemon-reload
 <span class="token comment"># 重启Docker</span>
 $ systemctl restart docker<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
-<p>​    更换源后再尝试pull。</p>
-<h5 id="3-1-4配置portainer"><a href="#3-1-4配置portainer" class="headerlink" title="3.1.4配置portainer"></a>3.1.4配置portainer</h5><p>​    成功运行portainer容器后在<code>9000</code>端口打开网页进入界面，首次访问需要设定账号密码。注意选择<code>Local</code>环境。在portainer中需要重新切换国内镜像源：</p>
+<p>​	更换源后再尝试pull。</p>
+<h5 id="314配置portainer"><a class="markdownIt-Anchor" href="#314配置portainer"></a> 3.1.4配置portainer</h5>
+<p>​	成功运行portainer容器后在<code>9000</code>端口打开网页进入界面，首次访问需要设定账号密码。注意选择<code>Local</code>环境。在portainer中需要重新切换国内镜像源：</p>
 <ul>
-<li>进入portainer管理页面后，点击<strong>Registries</strong>$\rarr$<strong>Add registry</strong>$\rarr$<strong>Custom registry</strong></li>
+<li>进入portainer管理页面后，点击<strong>Registries</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>Add registry</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>Custom registry</strong></li>
 <li>在<strong>Name</strong>中填写备注名称，在<strong>Registry URL</strong>中填写源地址</li>
 <li>点击<strong>Add registry</strong>即可</li>
 </ul>
 <p>拉取镜像时，点击左侧面板的<strong>Images</strong>，在<strong>Registry</strong>下拉选择镜像站（名称为刚才填写的备注名），在<strong>Image</strong>中填写所需镜像后点击<strong>Pull the image</strong>即可拉取镜像。</p>
-<h5 id="3-1-5安装emqx"><a href="#3-1-5安装emqx" class="headerlink" title="3.1.5安装emqx"></a>3.1.5安装emqx</h5><p>​    什么是EMQ X？</p>
+<h5 id="315安装emqx"><a class="markdownIt-Anchor" href="#315安装emqx"></a> 3.1.5安装emqx</h5>
+<p>​	什么是EMQ X？</p>
 <blockquote>
-<p>An Open-Source, Cloud-Native, Massive-Scalable MQTT Broker for IoT </p>
+<p>An Open-Source, Cloud-Native, Massive-Scalable MQTT Broker for IoT</p>
 </blockquote>
 <p>具体操作如下：</p>
 <ul>
-<li><p>在portainer中拉取镜像：<code>emqx/emqx</code></p>
+<li>
+<p>在portainer中拉取镜像：<code>emqx/emqx</code></p>
 </li>
-<li><p>在portainer中左侧<strong>Containers</strong>$\rarr$<strong>Add container</strong>，在<strong>Registry</strong>中选择拉取镜像时所用镜像站，<strong>Image</strong>选择<code>emqx/emqx</code></p>
+<li>
+<p>在portainer中左侧<strong>Containers</strong><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rarr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span><strong>Add container</strong>，在<strong>Registry</strong>中选择拉取镜像时所用镜像站，<strong>Image</strong>选择<code>emqx/emqx</code></p>
 </li>
-<li><p>在下方<strong>Manual network port publishing</strong>手动添加端口映射：</p>
+<li>
+<p>在下方<strong>Manual network port publishing</strong>手动添加端口映射：</p>
 <div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">host:1883	container:1883	TCP
 host:1883	container:1883	UDP
 host:18083	container:18083	TCP
 host:18083	container:18083	UDP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
 </li>
-<li><p>点击<strong>Deploy the container</strong></p>
+<li>
+<p>点击<strong>Deploy the container</strong></p>
 </li>
-<li><p>部署完成后在18083端口可看到管理页面，默认用户名为<code>admin</code>，密码为<code>public</code></p>
+<li>
+<p>部署完成后在18083端口可看到管理页面，默认用户名为<code>admin</code>，密码为<code>public</code></p>
 </li>
 </ul>
-<h4 id="3-2配置homie设备的MQTT服务器"><a href="#3-2配置homie设备的MQTT服务器" class="headerlink" title="3.2配置homie设备的MQTT服务器"></a>3.2配置homie设备的MQTT服务器</h4><p>​    在<code>configuration</code>模式中进入配置页面，选择wifi，填入密码后进入MQTT配置栏，按如下填写：</p>
+<h4 id="32配置homie设备的mqtt服务器"><a class="markdownIt-Anchor" href="#32配置homie设备的mqtt服务器"></a> 3.2配置homie设备的MQTT服务器</h4>
+<p>​	在<code>configuration</code>模式中进入配置页面，选择wifi，填入密码后进入MQTT配置栏，按如下填写：</p>
 <ul>
 <li><strong>MQTT broker address</strong>：填写部署了emqx的设备的ip地址</li>
 <li><strong>MQTT broker port</strong>：1883</li>
 <li><strong>Homie base topic</strong>：默认即可</li>
 </ul>
-<h3 id="4-Homie添加节点进行使用"><a href="#4-Homie添加节点进行使用" class="headerlink" title="4.Homie添加节点进行使用"></a>4.Homie添加节点进行使用</h3><p>​    有点辣鸡这玩意，不好用，无法设置低功耗待机模式，只有睡眠模式，此模式下还无法连接到wifi进行订阅主题，辣鸡，怕是要自己写才行。</p>
+<h3 id="4homie添加节点进行使用"><a class="markdownIt-Anchor" href="#4homie添加节点进行使用"></a> 4.Homie添加节点进行使用</h3>
+<p>​	有点辣鸡这玩意，不好用，无法设置低功耗待机模式，只有睡眠模式，此模式下还无法连接到wifi进行订阅主题，辣鸡，怕是要自己写才行。</p>
 
             </div>
             <hr>
@@ -603,6 +637,13 @@ host:18083	container:18083	UDP<span aria-hidden="true" class="line-numbers-rows"
 
 
 
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
 
 
 
