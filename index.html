@@ -182,6 +182,153 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/" target="_blank">
+          MockingBird实时语音克隆
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/" target="_blank">
+          
+          
+            
+          
+           Mocking Bird实时语音克隆
+ 前言
+Mocking Bird是一个github开源项目，还挺有意思的，尝试在白嫖的华为服务器上复现了一下，发现有几个坑点，记录一下。
+ 1.环境准备
+ 1.1 安装PyTorch
+按照PyTorch官网，先选择对应的环境：
+
+然后粘贴这条命令即可，但实际上pip安装总是失败，尝试使用conda进行安装成功了，因此先安装Anaconda，也可以只安装min
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-20 21:37" pubdate>
+              2021-10-20
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/10/20/%E5%85%8D%E8%B4%B9%E8%8A%82%E7%82%B9%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95/" target="_blank">
+          免费节点快速获取方法
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/20/%E5%85%8D%E8%B4%B9%E8%8A%82%E7%82%B9%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95/" target="_blank">
+          
+          
+            
+          
+           免费节点快速获取方法
+ 序言
+在youtube上订阅了“破解资源君”，每天都会发布视频并在配文处贴上节点链接地址，然而每次都需要去视频下方拿链接好麻烦，就想着写个脚本爬一下，结果观察发现下载地址发现为github仓库内的文件地址，芜湖，都不用爬了，直接克隆仓库就行，巴适得很。
+ 操作
+直接克隆仓库：
+$ git clone https://github.com/pojiezhiyuanjun/f
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-20 19:52" pubdate>
+              2021-10-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/v2ray/">v2ray</a>
+            
+              <a href="/tags/Git/">Git</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/10/20/%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85ros%E5%90%8Evirtualenv%E7%94%9F%E6%88%90%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%BB%8D%E4%BC%9A%E6%89%BE%E5%88%B0%E5%A4%96%E9%83%A8%E5%8C%85/" target="_blank">
+          解决安装ros后virtualenv生成的虚拟环境仍会找到外部包
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/10/20/%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85ros%E5%90%8Evirtualenv%E7%94%9F%E6%88%90%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%BB%8D%E4%BC%9A%E6%89%BE%E5%88%B0%E5%A4%96%E9%83%A8%E5%8C%85/" target="_blank">
+          
+          
+            
+          
+           解决安装ros后virtualenv生成的虚拟环境仍会找到外部包
+ 解决
+是因为在~/.bashrc中添加了
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+将其注释即可：
+#source /opt/ros/melodic/setup.bash
+#source ~/catkin_ws/devel/set
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-20 19:31" pubdate>
+              2021-10-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Ubuntu/">Ubuntu</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/ros/">ros</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2021/10/17/Ubuntu%E4%BB%8E%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85python3-9/" target="_blank">
           Ubuntu从源码安装python3.9
         </a>
@@ -273,9 +420,9 @@ $ wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.t
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/pt/">pt</a>
+              <a href="/tags/Ubuntu/">Ubuntu</a>
             
-              <a href="/tags/Linux/">Linux</a>
+              <a href="/tags/pt/">pt</a>
             
           </div>
         

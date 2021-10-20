@@ -4,6 +4,63 @@
   
   
   <entry>
+    <title>MockingBird实时语音克隆</title>
+    <link href="/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/"/>
+    <url>/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/</url>
+    
+    <content type="html"><![CDATA[<h2 id="mocking-bird实时语音克隆"><a class="markdownIt-Anchor" href="#mocking-bird实时语音克隆"></a> Mocking Bird实时语音克隆</h2><h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3><p><a href="https://github.com/babysor/MockingBird">Mocking Bird</a>是一个github开源项目，还挺有意思的，尝试在白嫖的华为服务器上复现了一下，发现有几个坑点，记录一下。</p><h3 id="1环境准备"><a class="markdownIt-Anchor" href="#1环境准备"></a> 1.环境准备</h3><h4 id="11-安装pytorch"><a class="markdownIt-Anchor" href="#11-安装pytorch"></a> 1.1 安装PyTorch</h4><p>按照<a href="https://pytorch.org/get-started/locally/">PyTorch官网</a>，先选择对应的环境：</p><p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/image-20211020200733640.png" alt="image-20211020200733640" /></p><p>然后粘贴这条命令即可，但实际上pip安装总是失败，尝试使用conda进行安装成功了，因此先安装Anaconda，也可以只安装miniconda</p><blockquote><p>conda是一款软件管理软件，相当于windows里面的应用商店，miniconda和anaconda中都包含了conda</p><p>miniconda安装包大小约为50 Mb，只包含了conda、python、和一些必备的软件工具</p><p>Anaconda安装包大小约为500 Mb，是miniconda的扩展，包含了数据科学和机器学习要用到的很多软件<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://www.zhihu.com/question/369468216">[1]</span></a></sup></p></blockquote><p>这里选择安装Anaconda，首先进入<a href="https://www.anaconda.com/products/individual#Downloads">下载页面</a>，选择对应的系统及架构复制下载链接，然后使用wget下载：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">wget</span> https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh<span class="token comment">#这里我的服务器是Linux系统x86_64架构</span>$ <span class="token function">bash</span> ./Anaconda3-2021.05-Linux-x86_64.sh<span class="token comment">#运行</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div><p>然后一路默认安装即可，<strong>记住</strong>这里的默认安装路径，一般是<code>/home/&lt;user&gt;/anaconda&lt;2 or 3&gt;</code>，不建议更改。如有疑惑可以参考<a href="https://docs.anaconda.com/anaconda/install/linux/">官方文档</a>。</p><p>安装后要进行初始化，进入刚才的安装路径，我这里是<code>/root/anaconda3</code>，再进入其中的<code>bin</code>，然后进行初始化：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ ./conda init<span class="token comment">#初始化，会将可执行文件和相关包的路径添加到环境变量</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>重开命令行窗口或者执行<code>. ~/.bashrc</code>，这样就完成了Anaconda的安装，然后再安装PyTorch：</p><p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/image-20211020202900951.png" alt="image-20211020202900951" /></p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ conda <span class="token function">install</span> pytorch torchvision torchaudio cpuonly -c pytorch<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>写文章的时候才发现这里我忘记看上面这条命令了，只输入了<code>conda install pytorch</code>，似乎是因为这才导致后面缺了一些依赖😢</p><h4 id="2安装ffmpeg"><a class="markdownIt-Anchor" href="#2安装ffmpeg"></a> 2.安装ffmpeg</h4><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ conda <span class="token function">install</span> ffmpeg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><h4 id="3其他依赖安装"><a class="markdownIt-Anchor" href="#3其他依赖安装"></a> 3.其他依赖安装</h4><p>首先克隆仓库：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">git</span> clone https://github.com/babysor/MockingBird.git$ <span class="token builtin class-name">cd</span> ./MockingBird<span class="token comment">#进入项目文件夹</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div><p>安装剩余依赖：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pip <span class="token function">install</span> -r requirements.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>安装webrtcvad：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pip <span class="token function">install</span> webrtcvad-wheels<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><h3 id="2准备合成器"><a class="markdownIt-Anchor" href="#2准备合成器"></a> 2.准备合成器</h3><p>这里直接使用社区其他成员训练好的合成器<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://github.com/babysor/MockingBird/blob/main/README-CN.md">[2]</span></a></sup>：</p><table><thead><tr><th>作者</th><th>下载链接</th><th>效果预览</th><th>信息</th></tr></thead><tbody><tr><td>\</td><td><a href="https://pan.baidu.com/s/11FrUYBmLrSs_cQ7s3JTlPQ">百度网盘</a>，提取码：gdn5</td><td>\</td><td>25k steps 用3个开源数据集混合训练</td></tr><tr><td>@<a href="https://github.com/FawenYo">FawenYo</a></td><td><a href="https://drive.google.com/file/d/1H-YGOUHpmqKxJ9FRc6vAjPuqQki24UbC/view?usp=sharing">谷歌云端硬盘</a></td><td><a href="https://github.com/babysor/MockingBird/wiki/audio/self_test.mp3">输入</a> <a href="https://github.com/babysor/MockingBird/wiki/audio/export.wav">输出</a></td><td>200k steps 台湾口音</td></tr><tr><td>@<a href="https://github.com/miven">miven</a></td><td><a href="https://pan.baidu.com/s/1PI-hM3sn5wbeChRryX-RCQ">百度网盘</a>，提取码：2021</td><td><a href="https://www.bilibili.com/video/BV1uh411B7AD/">bilibili</a></td><td>150k steps 旧版<strong>需根据<a href="https://github.com/babysor/MockingBird/issues/37">issue</a>修复</strong></td></tr></tbody></table><p>下载好要用的合成器.pt文件，将其移动到项目文件夹<code>MockingBird/synthesizer/saved_models/</code>下，然后回到<code>MockingBird</code>目录下，运行Web程序：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ python web.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><h3 id="trouble-shooting"><a class="markdownIt-Anchor" href="#trouble-shooting"></a> Trouble Shooting</h3><h4 id="1sndfileh-file-not-found"><a class="markdownIt-Anchor" href="#1sndfileh-file-not-found"></a> 1.‘sndfile.h’ file not found</h4><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libsndfile1-dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>参考：<a href="https://stackoverflow.com/questions/30219360/seewave-install-error-sndfile-h-file-not-found-for-r-3-2-0-under-osx-yose/30980601#30980601">stackoverflow</a></p><h4 id="2libasoundso2-cannot-open-shared-object-file-no-such-file-or-directory"><a class="markdownIt-Anchor" href="#2libasoundso2-cannot-open-shared-object-file-no-such-file-or-directory"></a> 2.libasound.so.2: cannot open shared object file: No such file or directory</h4><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libasound2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>参考：<a href="https://askubuntu.com/questions/482478/libasound-so-2-cannot-open-shared-object-file-no-such-file-or-directory">StackExchange</a></p><h4 id="3运行webpy后浏览器仍然无法访问"><a class="markdownIt-Anchor" href="#3运行webpy后浏览器仍然无法访问"></a> 3.运行web.py后浏览器仍然无法访问</h4><p>如果是服务器，需要先设置安全组入口，将端口号添加进去，此外还需要将<code>MockingBird/web/config/default.py</code>中的HOST = ‘localhost’改为HOST = ‘具体地址’，不能使用’localhost’或者’127.0.0.1’</p><h4 id="4浏览器无法录音"><a class="markdownIt-Anchor" href="#4浏览器无法录音"></a> 4.浏览器无法录音</h4><ul><li><p>换成Chrome浏览器，在地址栏输入：chrome://flags/#unsafely-treat-insecure-origin-as-secure</p></li><li><p>在Insecure origins treated as secure下输入对应的地址</p></li><li><p>使能后点击右下角Relaunch重启浏览器即可</p><p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/up-c1f9911584367f1ae96b30f2f773027b7ba.png" alt="https://oscimg.oschina.net/oscnet/up-c1f9911584367f1ae96b30f2f773027b7ba.png" /></p></li></ul><h4 id="5合成出的全是噪音"><a class="markdownIt-Anchor" href="#5合成出的全是噪音"></a> 5.合成出的全是噪音</h4><ul><li>不要使用音频转换软件来更改采样率，最好直接用页面的录音功能</li><li>将<code>MockingBird/synthesizer/utils/symbols.py</code>中第第11行改为：<br /><code>_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12340!\'(),-.:;?</code></li></ul><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a href="https://www.zhihu.com/question/369468216">https://www.zhihu.com/question/369468216</a><a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a href="https://github.com/babysor/MockingBird/blob/main/README-CN.md">https://github.com/babysor/MockingBird/blob/main/README-CN.md</a><a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>免费节点快速获取方法</title>
+    <link href="/2021/10/20/%E5%85%8D%E8%B4%B9%E8%8A%82%E7%82%B9%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95/"/>
+    <url>/2021/10/20/%E5%85%8D%E8%B4%B9%E8%8A%82%E7%82%B9%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<h2 id="免费节点快速获取方法"><a class="markdownIt-Anchor" href="#免费节点快速获取方法"></a> 免费节点快速获取方法</h2><h3 id="序言"><a class="markdownIt-Anchor" href="#序言"></a> 序言</h3><p>在youtube上订阅了“<a href="https://www.youtube.com/user/microkiawp7">破解资源君</a>”，每天都会发布视频并在配文处贴上节点链接地址，然而每次都需要去视频下方拿链接好麻烦，就想着写个脚本爬一下，结果观察发现下载<a href="https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/1020.zip">地址</a>发现为github仓库内的文件地址，芜湖，都不用爬了，直接克隆仓库就行，巴适得很。</p><h3 id="操作"><a class="markdownIt-Anchor" href="#操作"></a> 操作</h3><p>直接克隆<a href="https://github.com/pojiezhiyuanjun/freev2/">仓库</a>：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">git</span> clone https://github.com/pojiezhiyuanjun/freev2.git<span class="token comment">#或者</span>$ <span class="token function">git</span> clone git@github.com:pojiezhiyuanjun/freev2.git<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div><p>每天只要pull以下就能同步远程仓库：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">git</span> pull<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><p>然后直接搜索节点文件即可，文件以日期命名，如今天是10月20日，则搜索1020.zip就可以了。</p><h3 id="鸣谢"><a class="markdownIt-Anchor" href="#鸣谢"></a> 鸣谢</h3><p><strong>@<a href="https://www.youtube.com/user/microkiawp7">破解资源君</a></strong></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>v2ray</tag>
+      
+      <tag>Git</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>解决安装ros后virtualenv生成的虚拟环境仍会找到外部包</title>
+    <link href="/2021/10/20/%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85ros%E5%90%8Evirtualenv%E7%94%9F%E6%88%90%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%BB%8D%E4%BC%9A%E6%89%BE%E5%88%B0%E5%A4%96%E9%83%A8%E5%8C%85/"/>
+    <url>/2021/10/20/%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85ros%E5%90%8Evirtualenv%E7%94%9F%E6%88%90%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%BB%8D%E4%BC%9A%E6%89%BE%E5%88%B0%E5%A4%96%E9%83%A8%E5%8C%85/</url>
+    
+    <content type="html"><![CDATA[<h2 id="解决安装ros后virtualenv生成的虚拟环境仍会找到外部包"><a class="markdownIt-Anchor" href="#解决安装ros后virtualenv生成的虚拟环境仍会找到外部包"></a> 解决安装ros后virtualenv生成的虚拟环境仍会找到外部包</h2><h3 id="解决"><a class="markdownIt-Anchor" href="#解决"></a> 解决</h3><p>是因为在~/.bashrc中添加了</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">source</span> /opt/ros/melodic/setup.bash<span class="token builtin class-name">source</span> ~/catkin_ws/devel/setup.bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div><p>将其注释即可：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#source /opt/ros/melodic/setup.bash</span><span class="token comment">#source ~/catkin_ws/devel/setup.bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div><h3 id="解释"><a class="markdownIt-Anchor" href="#解释"></a> 解释</h3><p>脚本中存在<code>export PYTHONPATH</code>命令，而PYTHONPATH环境变量定义了python包的路径，它告诉python解释器在哪里寻找python导入，添加到.bashrc文件后则在bash中全局定义了此环境变量，因此即使进入了virtualenv创建的虚拟环境，执行<code>pip list</code>时也会在PYTHONPATH中找到外部的包<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://stackoverflow.com/questions/1382925/virtualenv-no-site-packages-and-pip-still-finding-global-packages">[1]</span></a></sup>。</p><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a href="https://stackoverflow.com/questions/1382925/virtualenv-no-site-packages-and-pip-still-finding-global-packages">https://stackoverflow.com/questions/1382925/virtualenv-no-site-packages-and-pip-still-finding-global-packages</a><a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Ubuntu</tag>
+      
+      <tag>python</tag>
+      
+      <tag>ros</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Ubuntu从源码安装python3.9</title>
     <link href="/2021/10/17/Ubuntu%E4%BB%8E%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85python3-9/"/>
     <url>/2021/10/17/Ubuntu%E4%BB%8E%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85python3-9/</url>
@@ -35,9 +92,9 @@
     
     <tags>
       
-      <tag>pt</tag>
+      <tag>Ubuntu</tag>
       
-      <tag>Linux</tag>
+      <tag>pt</tag>
       
     </tags>
     

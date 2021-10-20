@@ -18,7 +18,7 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>Ubuntu从源码安装python3.9 - MayHappy&#39;s Blog</title>
+  <title>MockingBird实时语音克隆 - MayHappy&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -171,7 +171,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Ubuntu从源码安装python3.9">
+            <span class="h2" id="subtitle" title="MockingBird实时语音克隆">
               
             </span>
 
@@ -181,8 +181,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-17 23:26" pubdate>
-        2021年10月17日 23点26分
+      <time datetime="2021-10-20 21:37" pubdate>
+        2021年10月20日 21点37分
       </time>
     </span>
   
@@ -193,7 +193,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      354 字
+      908 字
     </span>
   
 
@@ -203,7 +203,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      18
        分钟
     </span>
   
@@ -233,59 +233,114 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Ubuntu从源码安装python3.9</h1>
+            <h1 style="display: none">MockingBird实时语音克隆</h1>
             
             <div class="markdown-body">
-              <h2 id="ubuntu从源码安装python39"><a class="markdownIt-Anchor" href="#ubuntu从源码安装python39"></a> Ubuntu从源码安装python3.9</h2>
-<h3 id="1编译前"><a class="markdownIt-Anchor" href="#1编译前"></a> 1.编译前</h3>
-<p>先<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6169522/no-module-named-zlib">安装依赖zlib</a>：</p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> zlib1g-dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
-<h3 id="2编译"><a class="markdownIt-Anchor" href="#2编译"></a> 2.编译</h3>
-<p>参考官网说明<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://docs.python.org/zh-cn/3/using/unix.html
-">[1]</span></a></sup>，首先下载对应版本的python<a target="_blank" rel="noopener" href="https://www.python.org/downloads/source/">源码</a>，建议下载<code>.tar.xz</code>格式，这里下载<a target="_blank" rel="noopener" href="https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz">python 3.9.7</a></p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">wget</span> https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
-<p>也可以手动下载后<code>scp</code>传输到服务器。下载后解压并进入：</p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ xd -d Python-3.9.7.tar.xz
-$ <span class="token function">tar</span> -xvf Python-3.9.7.tar
-$ <span class="token builtin class-name">cd</span> ./Python-3.9.7
-
-$ ./configure
-$ <span class="token function">make</span>
-$ <span class="token function">make</span> altinstall		<span class="token comment">#编译产生的可执行文件一般在/usr/local/bin下</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+              <h2 id="mocking-bird实时语音克隆"><a class="markdownIt-Anchor" href="#mocking-bird实时语音克隆"></a> Mocking Bird实时语音克隆</h2>
+<h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3>
+<p><a target="_blank" rel="noopener" href="https://github.com/babysor/MockingBird">Mocking Bird</a>是一个github开源项目，还挺有意思的，尝试在白嫖的华为服务器上复现了一下，发现有几个坑点，记录一下。</p>
+<h3 id="1环境准备"><a class="markdownIt-Anchor" href="#1环境准备"></a> 1.环境准备</h3>
+<h4 id="11-安装pytorch"><a class="markdownIt-Anchor" href="#11-安装pytorch"></a> 1.1 安装PyTorch</h4>
+<p>按照<a target="_blank" rel="noopener" href="https://pytorch.org/get-started/locally/">PyTorch官网</a>，先选择对应的环境：</p>
+<p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/image-20211020200733640.png" srcset="/img/loading.gif" lazyload alt="image-20211020200733640" /></p>
+<p>然后粘贴这条命令即可，但实际上pip安装总是失败，尝试使用conda进行安装成功了，因此先安装Anaconda，也可以只安装miniconda</p>
 <blockquote>
-<p>相比于<code>make install</code>，<code>make altinstall</code>跳过创建软链接的操作，不会在<code>/usr/bin</code>下产生可执行文件</p>
+<p>conda是一款软件管理软件，相当于windows里面的应用商店，miniconda和anaconda中都包含了conda</p>
+<p>miniconda安装包大小约为50 Mb，只包含了conda、python、和一些必备的软件工具</p>
+<p>Anaconda安装包大小约为500 Mb，是miniconda的扩展，包含了数据科学和机器学习要用到的很多软件<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://www.zhihu.com/question/369468216
+">[1]</span></a></sup></p>
 </blockquote>
-<p>若要更改默认<code>python</code>的版本，可以利用<code>update-alternatives</code>链接文件<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://www.cnblogs.com/feynxd/p/11367806.html
-">[2]</span></a></sup></p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> update-alternatives --install /usr/bin/python python /usr/local/bin/python3.9 <span class="token number">1</span>	<span class="token comment">#添加Python3可选项，优先级为1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
-<p>也可以直接利用创建虚拟环境：</p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ virtualenv venv --python<span class="token operator">=</span>python3.9
-$ <span class="token builtin class-name">source</span> ./venv/bin/activate	<span class="token comment">#激活虚拟环境</span>
-$ deactivate		<span class="token comment">#退出虚拟环境</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
-<p>若<code>pip</code>速度较慢，可以更换国内源：</p>
-<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 阿里云 http://mirrors.aliyun.com/pypi/simple/ </span>
-<span class="token comment"># 中国科技大学 https://pypi.mirrors.ustc.edu.cn/simple/ </span>
-<span class="token comment"># 豆瓣(douban) http://pypi.douban.com/simple/ </span>
-<span class="token comment"># 清华大学 https://pypi.tuna.tsinghua.edu.cn/simple/ </span>
-<span class="token comment"># 中国科学技术大学 http://pypi.mirrors.ustc.edu.cn/simple/</span>
-$ pip3 <span class="token function">install</span> requests -i https://pypi.tuna.tsinghua.edu.cn/simple		<span class="token comment">#临时使用</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
-<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/using/unix.html">https://docs.python.org/zh-cn/3/using/unix.html</a>
-<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.cnblogs.com/feynxd/p/11367806.html">https://www.cnblogs.com/feynxd/p/11367806.html</a>
+<p>这里选择安装Anaconda，首先进入<a target="_blank" rel="noopener" href="https://www.anaconda.com/products/individual#Downloads">下载页面</a>，选择对应的系统及架构复制下载链接，然后使用wget下载：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">wget</span> https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh	<span class="token comment">#这里我的服务器是Linux系统x86_64架构</span>
+$ <span class="token function">bash</span> ./Anaconda3-2021.05-Linux-x86_64.sh	<span class="token comment">#运行</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
+<p>然后一路默认安装即可，<strong>记住</strong>这里的默认安装路径，一般是<code>/home/&lt;user&gt;/anaconda&lt;2 or 3&gt;</code>，不建议更改。如有疑惑可以参考<a target="_blank" rel="noopener" href="https://docs.anaconda.com/anaconda/install/linux/">官方文档</a>。</p>
+<p>安装后要进行初始化，进入刚才的安装路径，我这里是<code>/root/anaconda3</code>，再进入其中的<code>bin</code>，然后进行初始化：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ ./conda init	<span class="token comment">#初始化，会将可执行文件和相关包的路径添加到环境变量</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>重开命令行窗口或者执行<code>. ~/.bashrc</code>，这样就完成了Anaconda的安装，然后再安装PyTorch：</p>
+<p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/image-20211020202900951.png" srcset="/img/loading.gif" lazyload alt="image-20211020202900951" /></p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ conda <span class="token function">install</span> pytorch torchvision torchaudio cpuonly -c pytorch<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>写文章的时候才发现这里我忘记看上面这条命令了，只输入了<code>conda install pytorch</code>，似乎是因为这才导致后面缺了一些依赖😢</p>
+<h4 id="2安装ffmpeg"><a class="markdownIt-Anchor" href="#2安装ffmpeg"></a> 2.安装ffmpeg</h4>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ conda <span class="token function">install</span> ffmpeg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<h4 id="3其他依赖安装"><a class="markdownIt-Anchor" href="#3其他依赖安装"></a> 3.其他依赖安装</h4>
+<p>首先克隆仓库：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">git</span> clone https://github.com/babysor/MockingBird.git
+$ <span class="token builtin class-name">cd</span> ./MockingBird	<span class="token comment">#进入项目文件夹</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
+<p>安装剩余依赖：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pip <span class="token function">install</span> -r requirements.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>安装webrtcvad：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pip <span class="token function">install</span> webrtcvad-wheels<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<h3 id="2准备合成器"><a class="markdownIt-Anchor" href="#2准备合成器"></a> 2.准备合成器</h3>
+<p>这里直接使用社区其他成员训练好的合成器<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://github.com/babysor/MockingBird/blob/main/README-CN.md
+">[2]</span></a></sup>：</p>
+<table>
+<thead>
+<tr>
+<th>作者</th>
+<th>下载链接</th>
+<th>效果预览</th>
+<th>信息</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/11FrUYBmLrSs_cQ7s3JTlPQ">百度网盘</a>，提取码：gdn5</td>
+<td>\</td>
+<td>25k steps 用3个开源数据集混合训练</td>
+</tr>
+<tr>
+<td>@<a target="_blank" rel="noopener" href="https://github.com/FawenYo">FawenYo</a></td>
+<td><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1H-YGOUHpmqKxJ9FRc6vAjPuqQki24UbC/view?usp=sharing">谷歌云端硬盘</a></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/babysor/MockingBird/wiki/audio/self_test.mp3">输入</a> <a target="_blank" rel="noopener" href="https://github.com/babysor/MockingBird/wiki/audio/export.wav">输出</a></td>
+<td>200k steps 台湾口音</td>
+</tr>
+<tr>
+<td>@<a target="_blank" rel="noopener" href="https://github.com/miven">miven</a></td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1PI-hM3sn5wbeChRryX-RCQ">百度网盘</a>，提取码：2021</td>
+<td><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uh411B7AD/">bilibili</a></td>
+<td>150k steps 旧版<strong>需根据<a target="_blank" rel="noopener" href="https://github.com/babysor/MockingBird/issues/37">issue</a>修复</strong></td>
+</tr>
+</tbody>
+</table>
+<p>下载好要用的合成器.pt文件，将其移动到项目文件夹<code>MockingBird/synthesizer/saved_models/</code>下，然后回到<code>MockingBird</code>目录下，运行Web程序：</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ python web.py<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<h3 id="trouble-shooting"><a class="markdownIt-Anchor" href="#trouble-shooting"></a> Trouble Shooting</h3>
+<h4 id="1sndfileh-file-not-found"><a class="markdownIt-Anchor" href="#1sndfileh-file-not-found"></a> 1.‘sndfile.h’ file not found</h4>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libsndfile1-dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/30219360/seewave-install-error-sndfile-h-file-not-found-for-r-3-2-0-under-osx-yose/30980601#30980601">stackoverflow</a></p>
+<h4 id="2libasoundso2-cannot-open-shared-object-file-no-such-file-or-directory"><a class="markdownIt-Anchor" href="#2libasoundso2-cannot-open-shared-object-file-no-such-file-or-directory"></a> 2.libasound.so.2: cannot open shared object file: No such file or directory</h4>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libasound2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>参考：<a target="_blank" rel="noopener" href="https://askubuntu.com/questions/482478/libasound-so-2-cannot-open-shared-object-file-no-such-file-or-directory">StackExchange</a></p>
+<h4 id="3运行webpy后浏览器仍然无法访问"><a class="markdownIt-Anchor" href="#3运行webpy后浏览器仍然无法访问"></a> 3.运行web.py后浏览器仍然无法访问</h4>
+<p>如果是服务器，需要先设置安全组入口，将端口号添加进去，此外还需要将<code>MockingBird/web/config/default.py</code>中的HOST = ‘localhost’改为HOST = ‘具体地址’，不能使用’localhost’或者’127.0.0.1’</p>
+<h4 id="4浏览器无法录音"><a class="markdownIt-Anchor" href="#4浏览器无法录音"></a> 4.浏览器无法录音</h4>
+<ul>
+<li>
+<p>换成Chrome浏览器，在地址栏输入：chrome://flags/#unsafely-treat-insecure-origin-as-secure</p>
+</li>
+<li>
+<p>在Insecure origins treated as secure下输入对应的地址</p>
+</li>
+<li>
+<p>使能后点击右下角Relaunch重启浏览器即可</p>
+<p><img src="https://raw.githubusercontent.com/MayHappybb/image_host/master/image/up-c1f9911584367f1ae96b30f2f773027b7ba.png" srcset="/img/loading.gif" lazyload alt="https://oscimg.oschina.net/oscnet/up-c1f9911584367f1ae96b30f2f773027b7ba.png" /></p>
+</li>
+</ul>
+<h4 id="5合成出的全是噪音"><a class="markdownIt-Anchor" href="#5合成出的全是噪音"></a> 5.合成出的全是噪音</h4>
+<ul>
+<li>不要使用音频转换软件来更改采样率，最好直接用页面的录音功能</li>
+<li>将<code>MockingBird/synthesizer/utils/symbols.py</code>中第第11行改为：<br />
+<code>_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12340!\'(),-.:;?</code></li>
+</ul>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/369468216">https://www.zhihu.com/question/369468216</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://github.com/babysor/MockingBird/blob/main/README-CN.md">https://github.com/babysor/MockingBird/blob/main/README-CN.md</a>
 <a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/Ubuntu/">Ubuntu</a>
-                    
-                      <a class="hover-with-bg" href="/tags/python/">python</a>
-                    
-                  </div>
                 
               </div>
               
@@ -300,18 +355,12 @@ $ pip3 <span class="token function">install</span> requests -i https://pypi.tuna
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/20/%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85ros%E5%90%8Evirtualenv%E7%94%9F%E6%88%90%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%BB%8D%E4%BC%9A%E6%89%BE%E5%88%B0%E5%A4%96%E9%83%A8%E5%8C%85/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">解决安装ros后virtualenv生成的虚拟环境仍会找到外部包</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/11/pt%E8%80%83%E6%A0%B8%E8%BF%87%E4%B8%8D%E4%BA%86%EF%BC%9F%E5%BF%AB%E7%9C%8B%E6%80%A5%E6%95%91%E6%B3%95%EF%BC%81%EF%BC%81/">
-                        <span class="hidden-mobile">pt考核过不了？快看急救法！！</span>
+                      <a href="/2021/10/20/%E5%85%8D%E8%B4%B9%E8%8A%82%E7%82%B9%E5%BF%AB%E9%80%9F%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95/">
+                        <span class="hidden-mobile">免费节点快速获取方法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
