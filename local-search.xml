@@ -4,6 +4,29 @@
   
   
   <entry>
+    <title>泰拉瑞亚服务器搭建</title>
+    <link href="/2021/10/20/%E6%B3%B0%E6%8B%89%E7%91%9E%E4%BA%9A%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA/"/>
+    <url>/2021/10/20/%E6%B3%B0%E6%8B%89%E7%91%9E%E4%BA%9A%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA/</url>
+    
+    <content type="html"><![CDATA[<h2 id="泰拉瑞亚服务器搭建"><a class="markdownIt-Anchor" href="#泰拉瑞亚服务器搭建"></a> 泰拉瑞亚服务器搭建</h2><p>参照官方wiki<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="https://terraria.fandom.com/wiki/Server">[1]</span></a></sup>，只有编译好的<code>x86_64</code><a href="https://terraria.org/api/download/pc-dedicated-server/terraria-server-1423.zip">可执行文件</a>，包括<code>windows</code>平台和<code>Linux</code>，没有源码，因此不支持<code>arm</code>，这里运行在Ubuntu上：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">wget</span> https://terraria.org/api/download/pc-dedicated-server/terraria-server-1423.zip$ <span class="token function">unzip</span> <span class="token function">unzip</span> terraria-server*$ <span class="token builtin class-name">cd</span> terraria-server*/Linux/$ <span class="token function">chmod</span> -x ./TerrariaServer.bin.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div><p>然后将world文件放到<code>~/.local/share/Terraria/Worlds/</code>下，再运行服务器：</p><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ ./TerrariaServer.bin.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a href="https://terraria.fandom.com/wiki/Server">https://terraria.fandom.com/wiki/Server</a><a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Ubuntu</tag>
+      
+      <tag>泰拉瑞亚</tag>
+      
+      <tag>游戏服务器</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>MockingBird实时语音克隆</title>
     <link href="/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/"/>
     <url>/2021/10/20/MockingBird%E5%AE%9E%E6%97%B6%E8%AF%AD%E9%9F%B3%E5%85%8B%E9%9A%86/</url>
