@@ -6,3 +6,4 @@ dist/
 *.HEIC
 *.heic
 public/vendor/mediapipe/wasm/
+public/kit/

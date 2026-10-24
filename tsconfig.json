@@ -6,6 +6,7 @@
   ],
   "exclude": [
     "dist",
-    "public/vendor"
+    "public/vendor",
+    "public/kit"
   ]
 }

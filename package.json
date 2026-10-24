@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/copy-vendor.mjs",
+    "predev": "node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/copy-vendor.mjs",
+    "prebuild": "node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "rolldown": "1.2.15",
     "sharp": "0.35.5",
     "typescript": "6.0.3"
   }
