@@ -2,6 +2,7 @@
 // Load /kit/v1/sketch.css and /kit/v1/sketch.js (deferred). It adds the site header with the
 // pull-cord, shares the paper colour with the main site (same origin, same localStorage key),
 // and draws rough frames and underlines. Pages that add content later call sketch.draw(root).
+// The header goes before <main>, or in place of an element with data-sketch-header.
 import { initSketch, drawBits, redrawAll } from '../scripts/sketch';
 import { NAV, SITE } from '../data/site';
 
@@ -30,7 +31,9 @@ function header() {
 function start() {
   const body = document.body;
   const main = document.querySelector('main');
-  if (main) {
+  const slot = document.querySelector('[data-sketch-header]'); // a page can say where the header goes
+  if (slot) slot.replaceWith(header());
+  else if (main) {
     main.id ||= 'sk-main';
     const skip = Object.assign(document.createElement('a'), { className: 'sk-skip', href: `#${main.id}`, textContent: 'Skip to content' });
     body.prepend(skip);
