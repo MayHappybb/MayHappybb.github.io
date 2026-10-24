@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Authors from '../components/Authors.astro';
+import { firstAuthor, otherPapers, patents } from '../data/papers';
+import { SITE } from '../data/site';
+---
+<Base title="Research" description="Haibin Meng's research: measuring micrometre vibration, sound and motion with mmWave MIMO radar. Papers, patents and the stories behind them.">
+  <h1>Research</h1>
+  <p class="lead">A radar measures distance. Its phase measures distance changes far smaller than its wavelength. I use that to sense vibration, sound and motion without touching anything.</p>
+  <p>I'm a PhD candidate in the State Key Laboratory of Mechanical System and Vibration at Shanghai Jiao Tong University, advised by Prof. Zhike Peng and working day to day with Assoc. Prof. Yuyong Xiong. My thesis is about measuring vibration in several dimensions with a single MIMO microwave radar: radar usually sees motion only along its line of sight, and I want it to see the rest.</p>
+  <div class="links">
+    <a href={SITE.scholar}>Google Scholar</a>
+    <a href={SITE.orcid}>ORCID</a>
+    <a href="#papers">Papers</a>
+    <a href="#patents">Patents</a>
+    <a href="#film">The film</a>
+  </div>
+
+  <h2 data-under>Four questions</h2>
+  <p class="small">My first-author papers, each told as the question it answers, and how it got there.</p>
+  <ul class="list">
+    {firstAuthor.map((p) => (
+      <li data-icon={p.icon}>
+        <span class="title">{p.question}</span>
+        <p style="margin:6px 0">{p.story}</p>
+        <span class="small"><a href={`https://doi.org/${p.doi}`}>{p.title}</a>. {p.venue}, {p.year}.</span><br>
+        <Authors authors={p.authors} me={p.me} />
+      </li>
+    ))}
+  </ul>
+
+  <h2 data-under>Rejected, and then not</h2>
+  <p>Papers don't go straight from idea to print, and I think it helps to say so. The multiple-reflection letter was rejected four times before it was accepted. The cross-range paper was rejected by IEEE T-MTT, called out of scope by IEEE TAP two weeks later, given reject-and-resubmit by MSSP, and then accepted after two rounds of revision. Each round made it better: three new experiments for the relay paper, a sharper argument for the cross-range one. What I keep from it: write the reply to the reviewers as carefully as the paper.</p>
+
+  <h2 data-under id="papers">All papers</h2>
+  <p class="small">12 so far: 4 as first author, 3 as second. My name is underlined.</p>
+  <ul class="papers">
+    {[...firstAuthor, ...otherPapers].sort((a, b) => b.year - a.year).map((p) => (
+      <li>
+        <a class="ptitle" href={`https://doi.org/${p.doi}`}>{p.title}</a>{p.award && <strong> · {p.award}</strong>}<br>
+        <Authors authors={p.authors} me={p.me} /><br>
+        <span class="small">{p.venue}, {p.year}</span>
+      </li>
+    ))}
+  </ul>
+
+  <h2 data-under id="patents">Patents</h2>
+  <ul class="list">
+    {patents.map((p) => (
+      <li data-icon="doc">
+        <span class="title">{p.title}</span>
+        <span class="where" lang="zh">{p.zh}</span>
+        <p style="margin:6px 0">{p.note}</p>
+        <span class="small"><a href={p.href}>{p.id}</a>, {p.kind}</span>
+      </li>
+    ))}
+  </ul>
+
+  <h2 data-under id="film">The field in six minutes</h2>
+  <p>An animated explainer made with coding agents: how a phase change of a few degrees reveals a tenth of a millimetre, and how an antenna array adds direction. A 26-minute version is coming.</p>
+  <figure class="photo" data-frame>
+    <video controls preload="none" poster="/media/invisible-motion.jpg" width="1280" height="720" style="width:100%;height:auto;display:block;position:relative">
+      <source src="/media/invisible-motion.mp4" type="video/mp4">
+      <a href="/media/invisible-motion.mp4">Download the video (6.8 MB)</a>.
+    </video>
+    <figcaption>Invisible Motion, 5:55. <a href="/projects/explainer-films/">How the films are made</a>.</figcaption>
+  </figure>
+
+  <h2 data-under>In the lab</h2>
+  <p>TI mmWave radars (AR1243, AWR2243 single and 4-chip cascade, IWR6843AOP) with DCA1000 capture boards, scripted through mmWave Studio. A laser displacement sensor as the reference, an electrodynamic shaker, a motorised slide table, a gravity pendulum, corner reflectors from tiny to large, and many 3D-printed fixtures. The lab's MATLAB toolbox is <a href="/projects/radar-toolbox/">mine</a>.</p>
+  <p>Before radar I worked on legged robots: <a href="/projects/thesis-quadruped/">whole-body planning for a quadruped with an arm</a>, my undergraduate thesis. I also review for the IEEE Sensors Journal.</p>
+</Base>

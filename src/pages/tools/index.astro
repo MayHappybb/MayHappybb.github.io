@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Tools" description="Small tools that run in your browser: a dithering studio, a radar array PSF designer, face morphing, and more.">
+  <h1>Tools</h1>
+  <p class="lead">Things you can use right now. They run in your browser; nothing you load is uploaded anywhere.</p>
+
+  <ul class="list">
+    <li data-icon="dots"><span class="title"><a href="/tools/dither/">Dithering studio</a></span>Turn a picture into 1-bit pixels, dots or symbols. Floyd–Steinberg, Atkinson, Stucki, Bayer, blue noise. Export PNG, or SVG for a pen plotter or a laser.</li>
+    <li data-icon="array"><span class="title"><a href="/tools/psf/">Array PSF designer</a></span>Place the transmit and receive antennas of a MIMO radar, or load a TI layout, and see the virtual array, the beam pattern and its sidelobes.</li>
+    <li data-icon="face"><span class="title"><a href="/tools/facemorph/">Face morph</a></span>Average several faces or morph one into another, from your own photos.</li>
+  </ul>
+
+  <h2 data-under>Elsewhere</h2>
+  <ul class="list">
+    <li data-icon="clock"><span class="title"><a href="https://mayhappybb.github.io/clock-skills/gallery/">Clock-face gallery</a></span>561 animated faces for tiny displays, and the <a href="https://mayhappybb.github.io/clock-skills/">simulators</a> they were designed on.</li>
+    <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">Straight Line</a></span>A control challenge: write Python to keep a drifting toy car straight, with a leaderboard.</li>
+    <li data-icon="house"><span class="title"><a href="https://mayhappybb.github.io/hsbc-one-calculator/">HSBC One balance calculator</a></span>How much to deposit to meet the three-month average balance.</li>
+    <li data-icon="key"><span class="title">JAccount QR on your own screen</span>Show the SJTU campus identity code without the official app. Coming as a small repository you run yourself, since it needs your own login.</li>
+  </ul>
+</Base>

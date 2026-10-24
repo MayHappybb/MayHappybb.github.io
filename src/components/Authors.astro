@@ -1,0 +1,7 @@
+---
+interface Props { authors: string[]; me: number }
+const { authors, me } = Astro.props;
+---
+<span class="small">{authors.map((a, i) => (
+  <>{i > 0 && ', '}{i + 1 === me ? <strong class="me">{a}</strong> : a}</>
+))}</span>

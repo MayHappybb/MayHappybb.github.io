@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# Raw photos and the private profile never belong in this repo.
+*.HEIC
+*.heic
+public/vendor/mediapipe/wasm/

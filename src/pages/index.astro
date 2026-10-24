@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { firstAuthor } from '../data/papers';
+import { ideas } from '../data/ideas';
+
+const projects = (await getCollection('projects')).filter((p) => p.data.featured).sort((a, b) => +b.data.date - +a.data.date);
+const notes = (await getCollection('notes')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 4);
+// a few that became something, then the newest open ones
+const jar = [...ideas.filter((i) => i.state === 'done').slice(1, 3), ...ideas.filter((i) => i.state === 'open').slice(-4)];
+---
+<Base>
+  <svg id="hero" viewBox="0 0 700 310" role="img" aria-label="A drawing: a small radar sends waves to a thin foil in front of a speaker, and a tiny clock screen on a desk shows the time"></svg>
+
+  <h1>Hi, I'm Haibin.</h1>
+  <p class="lead">I use radio waves to feel surfaces move by a micrometre, and I build small things that blink.</p>
+  <p class="small">PhD candidate at Shanghai Jiao Tong University, State Key Laboratory of Mechanical System and Vibration. Before that, mechanical engineering and robots at Harbin Institute of Technology, Shenzhen.</p>
+
+  <h2 data-under>Now</h2>
+  <ul class="list">
+    <li data-icon="spiral"><span class="title">Measuring 3D vibration with one radar</span>My thesis. A target that moves on a straight line came out as a spiral; it was static clutter, and I'm modelling it away. <a href="/notes/the-spiral/">The story so far</a>.</li>
+    <li data-icon="clock"><span class="title">Teaching agents to design clocks for tiny screens</span>561 faces so far, for character LCDs, OLEDs, a 160×80 TFT and LED panels. <a href="https://mayhappybb.github.io/clock-skills/gallery/">See them all ticking</a>.</li>
+    <li data-icon="chip"><span class="title">Programming ESP32 boards from a phone</span>Flash a board once; after that any AI agent can build and flash new code over the air. <a href="/projects/esp-agent/">How it works</a>.</li>
+    <li data-icon="work"><span class="title">Interning on an AI video agent team</span>At bilibili since September 2026, learning how LLM agents fail in production. <a href="/about/#internship">What I'm learning</a>.</li>
+  </ul>
+
+  <h2 data-under>Research</h2>
+  <ul class="list">
+    {firstAuthor.map((p) => (
+      <li data-icon={p.icon}><span class="title">{p.question}</span><span class="where">{p.venue.split(/ \d/)[0]}, {p.year}, first author</span></li>
+    ))}
+    <li data-icon="star"><span class="title">Best Paper Award, ICSMD 2025 (co-author)</span><span class="where">Long-range active acoustic sensing with microwaves</span></li>
+  </ul>
+  <p style="margin-top:12px"><a href="/research/">All 12 papers, two patents, and the rejections along the way</a></p>
+
+  <h2 data-under>Try something</h2>
+  <ul class="list">
+    <li data-icon="dots"><span class="title"><a href="/tools/dither/">Dithering studio</a></span>Turn a photo into dots, symbols or 1-bit pixels, and export SVG for a plotter.</li>
+    <li data-icon="array"><span class="title"><a href="/tools/psf/">Array PSF designer</a></span>Place radar antennas, see the virtual array and how sharply it can see.</li>
+    <li data-icon="face"><span class="title"><a href="/tools/facemorph/">Face morph</a></span>Average or morph faces from your own photos. They never leave your browser.</li>
+    <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">Straight Line</a></span>Write Python to make a wobbly toy car drive straight.</li>
+  </ul>
+
+  <h2 data-under>Things I made</h2>
+  <div class="cards breakout">
+    {projects.map((p) => <ProjectCard project={p} />)}
+  </div>
+  <p style="margin-top:20px"><a href="/projects/">Everything, back to 2019</a></p>
+
+  <h2 data-under>Ideas jar</h2>
+  <p class="small">Things I wrote down. A tick means it became something.</p>
+  <ul class="list jar">
+    {jar.map((i) => <li data-done={i.state === 'done' ? '' : undefined}>{i.href ? <a href={i.href}>{i.text}</a> : i.text}</li>)}
+  </ul>
+  <p style="margin-top:12px"><a href="/notes/#ideas">The whole jar</a></p>
+
+  <h2 data-under>Notes</h2>
+  <ul class="list">
+    {notes.map((n) => <li data-icon={n.data.icon}><span class="title"><a href={`/notes/${n.id}/`}>{n.data.title}</a></span>{n.data.summary}</li>)}
+  </ul>
+</Base>
+<script>
+  import { initHero } from '../scripts/hero';
+  initHero();
+</script>

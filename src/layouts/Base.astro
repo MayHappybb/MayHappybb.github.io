@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import { SITE, NAV } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  wide?: boolean;
+}
+const { title, description = SITE.description, wide = false } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name}`;
+const path = Astro.url.pathname;
+const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const canonical = new URL(path, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{fullTitle}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content={fullTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={canonical}>
+  <meta name="theme-color" content="#ffffff">
+  <script is:inline>
+    try { if (localStorage.getItem('paper') === 'black' || location.hash === '#dark') document.documentElement.classList.add('dark'); } catch (e) {}
+  </script>
+  <slot name="head" />
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <header class="top">
+    <a class="brand" href="/">Haibin Meng</a>
+    <nav aria-label="Main">
+      <ul class="nav">
+        {NAV.map((n) => <li><a href={n.href} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <button class="switch" id="switch" type="button" aria-label="Switch between white and black paper" aria-pressed="false">
+      <svg id="switchsvg" viewBox="0 0 30 52" aria-hidden="true"></svg><span id="switchlabel">lights off</span>
+    </button>
+  </header>
+  <main id="content" class={wide ? 'wide' : undefined}>
+    <slot />
+  </main>
+  <footer class="foot">
+    <div data-rule></div>
+    <p>Say hi: <a href={`mailto:${SITE.email}`}>{SITE.email}</a> &nbsp; <a href={SITE.github}>GitHub</a> &nbsp; <a href={SITE.scholar}>Scholar</a> &nbsp; <a href={SITE.orcid}>ORCID</a></p>
+    <p class="small">Drawn with rough.js, set in Gaegu and Klee One. Built with Astro and coding agents. © {new Date().getFullYear()} Haibin Meng.</p>
+  </footer>
+  <script>
+    import { initSketch } from '../scripts/sketch';
+    initSketch();
+  </script>
+</body>
+</html>

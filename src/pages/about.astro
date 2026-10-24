@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import { timeline } from '../data/timeline';
+import { SITE } from '../data/site';
+---
+<Base title="About" description="About Haibin Meng: education, internship, honours, hobbies and a timeline from 2018.">
+  <h1>About</h1>
+  <p class="lead">I'm Haibin Meng (孟海彬), MayHappy online since 2019. I measure tiny motions with radar, and in my spare time I build small machines and let coding agents help me build more of them.</p>
+  <p>I like finding the core question behind a phenomenon, modelling it, designing a method, and an experiment to check it. When something breaks, I go back and model it again until it is solved. I can never lose my interest in learning: when I first learned that a radar's angular resolution depends on its aperture, my first thought was to move the radar to make the aperture bigger, and only later found that this idea has a name, synthetic aperture.</p>
+  <p>Say hi: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+
+  <h2 data-under>Education</h2>
+  <ul class="list">
+    <li data-icon="cap">
+      <span class="title">Shanghai Jiao Tong University, 2022 – (expected 2027)</span>
+      Combined master–PhD track, School of Mechanical Engineering, State Key Laboratory of Mechanical System and Vibration. Advisor Prof. Zhike Peng. PhD proposal defended October 2025.
+    </li>
+    <li data-icon="cap">
+      <span class="title">Harbin Institute of Technology, Shenzhen, 2018 – 2022</span>
+      B.Eng. in Mechanical Design, Manufacturing and Automation, ranked 2nd of 74. Thesis on whole-body planning for a quadruped with an arm, advised by Prof. Wenfu Xu. Undergraduate research with Prof. Honghai Liu and Dr. Han Yuan.
+    </li>
+  </ul>
+
+  <h2 data-under id="internship">Internship</h2>
+  <ul class="list">
+    <li data-icon="work">
+      <span class="title">Intern, AI video agent team, bilibili (花生), Sep 2026 – present</span>
+      <p style="margin-top:6px">In September 2026 I joined the team behind 花生, an AI video-creation agent: you give it a sentence or a script, and an LLM agent plans the storyboard, gathers footage, adds a voice-over and assembles a video. It was my first internship, and my background is microwave-radar vibration measurement, not web software.</p>
+      <p>My lead's brief was unusual: not an engineer who waits for tickets, but a "vertical" engineer, someone who understands the users, the product and the technical detail well enough to find problems that are real and solvable today. When I proposed post-training a model because it sounded exciting, my lead called it holding a hammer and looking for nails. Problem first, technique second.</p>
+      <p>So I started from the ground. I used the product as a creator and wrote down where it let me down. I mapped the codebase with coding agents, and when their overviews did not give me real understanding, I worked through the agent runtime piece by piece, learning TypeScript, asynchronous programming and streaming on the way, and wrote two long beginner's guides for myself.</p>
+      <p>Then came real bugs. In one, the agent occasionally got stuck calling the same read-only tool over and over. Fresh test runs never showed it, so I built a replay setup that resumes a session from the exact state where a real run had gone wrong. That showed the loop feeds on itself: once a few identical turns are in the context, the model tends to keep copying them. The fix was a small guard that declines an identical repeated call and tells the model to move on, without ending the user's turn. I measured it against unguarded runs before it was merged.</p>
+      <p>Another investigation, into numbers the agent occasionally misreported, ended differently: hundreds of replays could not reproduce it, and we decided it was rare enough to leave alone. A third task was bringing a safeguard from an older version of the agent to the new one: when the model says it will call a tool but doesn't, the run is nudged to actually act. I checked it against past runs for false alarms, and after release I watched live traces until it fired and confirmed the runs recovered.</p>
+      <p>What I took away:</p>
+      <ul>
+        <li>What made me productive in radar research carries over: know the real problems, and know the principle in full detail, until the system runs in your head.</li>
+        <li>With LLM agents, rare failures are normal. Reproducing them from the real context, with enough runs, beats arguing from a single trace.</li>
+        <li>Coding agents wrote much of my code. My job was to understand every line I shipped and explain it to a reviewer.</li>
+        <li>A short, evidence-first notebook (problems, tasks, a five-line diary) helped more than any long log.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2 data-under>Honours</h2>
+  <ul class="list">
+    <li data-icon="star"><span class="title">Best Paper Award (co-author), IEEE ICSMD 2025</span></li>
+    <li data-icon="star"><span class="title">Silver, China International College Student Innovation Competition, Shanghai, 2025</span><span class="where">Team member, 微波慧眼: non-contact vibration measurement for large structures</span></li>
+    <li data-icon="star"><span class="title">Three-Good Student, SJTU School of Mechanical Engineering, 2025</span><span class="where">and the Midea Air-Conditioning Technology Innovation Scholarship, 2025</span></li>
+    <li data-icon="star"><span class="title">Outstanding Graduate, Harbin Institute of Technology, 2022</span></li>
+    <li data-icon="star"><span class="title">National first prize, 9th National Undergraduate Mechanical Innovation Design Competition, 2020</span><span class="where">fischertechnik group, with the <a href="/projects/wardrobe/">rotating wardrobe</a></span></li>
+    <li data-icon="star"><span class="title">Scholarships at HIT Shenzhen</span><span class="where">Outstanding Student Scholarship, first prize 2020 and 2021, second prize 2019; Xidian Scholarship special prize 2020; Gongjin Scholarship 2020; first-year project excellence award 2021</span></li>
+    <li data-icon="doc"><span class="title">Patents</span><span class="where">Invention patent CN112097213B (with its utility-model twin) and application CN121763247A. <a href="/research/#patents">Details</a></span></li>
+  </ul>
+
+  <h2 data-under>Outside the lab</h2>
+  <p>Badminton (the most-booked court of my booking bot), tennis, the gym, cycling and skiing. Piano lessons since May 2026. Photography with a Sony A7R II, mostly long telephoto: mountains, night cities, animals, campus, plus a roll or two of film. Drawing practice. Flying FPV. Board games, Hive above all. Video games, especially the ones where you build a factory (Factorio, Dyson Sphere Program) and the ones where you run the server for friends (Don't Starve Together, Terraria).</p>
+  <p>I also like retro industrial design (Braun, tiny CRTs), watches, transit-card art, pixel art and the demoscene, which explains most of the <a href="/projects/#agents">small-screen projects</a>.</p>
+
+  <h2 data-under>Timeline</h2>
+  <ul class="timeline">
+    {timeline.map((t) => (
+      <li><span class="y">{t.year}</span><div>{t.items.map((i) => <p style="margin:0 0 6px">{i}</p>)}</div></li>
+    ))}
+  </ul>
+</Base>
