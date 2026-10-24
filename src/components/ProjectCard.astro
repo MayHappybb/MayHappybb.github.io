@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Snapshot from './Snapshot.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props { project: CollectionEntry<'projects'>; showImage?: boolean }
@@ -9,7 +9,7 @@ const href = `/projects/${project.id}/`;
 ---
 <article class="card" data-frame>
   {showImage && d.image && (
-    <Image src={d.image} alt={d.imageAlt ?? ''} widths={[400, 700]} sizes="(max-width: 700px) 100vw, 350px" loading="lazy" />
+    <Snapshot src={d.image} alt={d.imageAlt ?? ''} seed={project.id} widths={[400, 700]} sizes="(max-width: 700px) 100vw, 340px" />
   )}
   <h3 class="title" style="margin:0"><a href={href}>{d.title}</a></h3>
   <p>{d.summary} <span class="yr">{d.year}</span></p>

@@ -62,7 +62,7 @@ ul.list li svg.icon { position:absolute; left:0; top:12px; width:40px; height:40
 .card { margin:0; position:relative; padding:16px 18px 18px; display:flex; flex-direction:column; }
 .card > * { position:relative; }
 .card .yr { font-family:"Gaegu"; color:var(--pencil); font-size:18px; }
-.card img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; margin:0 0 12px; filter:grayscale(.15); }
+.card .snap { margin:4px 2px 16px; }
 .card p { margin:4px 0 0; }
 .card .more { margin-top:auto; padding-top:10px; font-family:"Gaegu"; font-size:19px; }
 .tag { font-family:"Gaegu"; font-size:17px; color:var(--pencil); }
@@ -86,12 +86,25 @@ ul.list li svg.icon { position:absolute; left:0; top:12px; width:40px; height:40
 .timeline li { display:grid; grid-template-columns:96px 1fr; gap:16px; padding:6px 0; }
 .timeline .y { font-family:"Gaegu"; font-weight:700; font-size:22px; line-height:1.4; }
 
-/* figures */
+/* figures: videos and drawings sit in a rough frame */
 figure.photo { margin:24px 0; padding:12px; position:relative; }
 figure.photo img { display:block; width:100%; position:relative; }
 figure.photo figcaption { position:relative; color:var(--pencil); font-size:15px; margin-top:8px; }
-.photos2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.photos2 figure.photo { margin:0; }
+
+/* photos are taped into the sketchbook (owner's choice, option A) */
+.snap { position:relative; margin:30px auto 26px; padding:10px 10px 4px; background:#fff; max-width:100%;
+  box-shadow:0 1px 3px rgba(0,0,0,.22), 0 6px 14px -8px rgba(0,0,0,.25);
+  transform:rotate(var(--tilt, -1deg)); transition:transform .3s ease; }
+html.dark .snap { background:#ececec; box-shadow:0 1px 3px rgba(0,0,0,.6); }
+.snap img { display:block; width:100%; height:auto; }
+.snap figcaption { font-family:"Gaegu"; font-size:20px; line-height:1.3; color:#333; text-align:center; padding:6px 4px 4px; margin:0; }
+.snap .tape { position:absolute; top:-13px; left:50%; width:min(96px, 34%); height:26px; z-index:2;
+  transform:translateX(-50%) rotate(var(--tape, -3deg)); background:rgba(255,228,92,.6); }
+html.dark .snap .tape { background:rgba(255,228,92,.45); }
+.snap .tape svg.frame path { stroke:#8a7a2a; }
+a:hover .snap, .card:hover .snap, .snap:hover { transform:rotate(0deg); }
+.photos2 { display:grid; grid-template-columns:1fr 1fr; gap:18px 26px; align-items:start; }
+.photos2 .snap { margin:20px 0 10px; }
 
 /* prose (markdown pages) */
 .prose h2 { font-size:30px; margin-top:44px; }

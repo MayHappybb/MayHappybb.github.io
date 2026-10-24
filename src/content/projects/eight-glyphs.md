@@ -7,6 +7,7 @@ group: agents
 icon: star
 image: ../../assets/photos/amber-1602.jpg
 imageAlt: "An amber-on-black 16 by 2 character LCD on a green board, showing a big-digit clock reading 01:57."
+caption: "the amber 1602 on my desk"
 built: "Written by Claude Code against the ESP32 agent, flashed over the air."
 ---
 

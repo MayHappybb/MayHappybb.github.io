@@ -7,6 +7,7 @@ group: making
 icon: clock
 image: ../../assets/photos/mini-crt.jpg
 imageAlt: "A render of a small retro CRT-style desk clock case holding a 16 by 2 LCD."
+caption: "mini CRT case, a render"
 built: "Modelled with agents in OpenSCAD and Python drawing tools."
 status: "Designed; not printed yet."
 ---

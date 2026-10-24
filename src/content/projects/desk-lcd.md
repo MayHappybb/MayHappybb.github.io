@@ -7,6 +7,7 @@ group: agents
 icon: chip
 image: ../../assets/photos/desk-lcd.jpg
 imageAlt: "Close-up of the 0.96 inch colour LCD showing its bring-up test screen: red, green, blue and white bars and the panel settings that worked."
+caption: "first light: the bring-up screen"
 featured: true
 built: "Built with Claude Code in one day; firmware, bridge and SDK are agent-written to my design and review."
 status: "Working. Its features are moving into the ESP32 agent below."

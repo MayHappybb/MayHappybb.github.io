@@ -7,6 +7,7 @@ group: making
 icon: printer
 image: ../../assets/photos/voron-2.4.jpg
 imageAlt: "A finished Voron 2.4 3D printer with a black frame, red printed parts and clear panels."
+caption: "the Voron, finished, March 2024"
 featured: true
 ---
 

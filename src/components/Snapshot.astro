@@ -1,0 +1,25 @@
+---
+// A photo taped into the sketchbook: white border, slight tilt, a strip of tape, a handwritten caption.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  seed?: string; // picks a stable tilt, so the same photo always leans the same way
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+}
+const { src, alt, caption, seed = alt, widths = [700, 1400], sizes = '(max-width: 740px) 100vw, 700px', loading = 'lazy' } = Astro.props;
+let h = 7;
+for (const c of seed) h = (h * 31 + c.charCodeAt(0)) % 997;
+const tilt = (((h % 7) - 3) * 0.6).toFixed(1); // -1.8° … 1.8°
+const tapeTilt = ((h % 5) - 2) * 2;
+---
+<figure class="snap" style={`--tilt:${tilt}deg; --tape:${tapeTilt}deg`}>
+  <span class="tape" aria-hidden="true" data-frame></span>
+  <Image src={src} alt={alt} widths={widths} sizes={sizes} loading={loading} />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

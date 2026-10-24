@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import Snapshot from '../../components/Snapshot.astro';
 import Base from '../../layouts/Base.astro';
 import { GROUPS } from '../../content.config';
 
@@ -18,11 +18,7 @@ const { Content } = await render(project);
   <p class="lead">{d.summary}</p>
   <p class="meta">{d.year}{d.status && <> · {d.status}</>}{d.built && <><br>{d.built}</>}</p>
   {d.links.length > 0 && <div class="links">{d.links.map((l) => <a href={l.href}>{l.label}</a>)}</div>}
-  {d.image && (
-    <figure class="photo" data-frame>
-      <Image src={d.image} alt={d.imageAlt ?? ''} widths={[700, 1400]} sizes="(max-width: 740px) 100vw, 700px" />
-    </figure>
-  )}
+  {d.image && <Snapshot src={d.image} alt={d.imageAlt ?? ''} caption={d.caption} seed={project.id} loading="eager" />}
   <div class="prose"><Content /></div>
   <p style="margin-top:40px"><a href="/projects/">All projects</a></p>
 </Base>

@@ -22,6 +22,7 @@ const projects = defineCollection({
       icon: z.string().default('star'),
       image: image().optional(),
       imageAlt: z.string().optional(),
+      caption: z.string().optional(), // handwritten line under the taped-in photo
       status: z.string().optional(),
       built: z.string().optional(), // honest authorship line
       links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
