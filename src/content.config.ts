@@ -27,6 +27,7 @@ const projects = defineCollection({
       built: z.string().optional(), // honest authorship line
       links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
       featured: z.boolean().default(false),
+      film: z.boolean().default(false), // show the radar explainer film above the text
     }),
 });
 

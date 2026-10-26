@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Authors from '../components/Authors.astro';
+import Film from '../components/Film.astro';
 import { firstAuthor, otherPapers, patents } from '../data/papers';
 import { SITE } from '../data/site';
 ---
@@ -56,15 +57,9 @@ import { SITE } from '../data/site';
     ))}
   </ul>
 
-  <h2 data-under id="film">The field in six minutes</h2>
-  <p>An animated explainer made with coding agents: how a phase change of a few degrees reveals a tenth of a millimetre, and how an antenna array adds direction. A 26-minute version is coming.</p>
-  <figure class="photo" data-frame>
-    <video controls preload="none" poster="/media/invisible-motion.jpg" width="1280" height="720" style="width:100%;height:auto;display:block;position:relative">
-      <source src="/media/invisible-motion.mp4" type="video/mp4">
-      <a href="/media/invisible-motion.mp4">Download the video (6.8 MB)</a>.
-    </video>
-    <figcaption>Invisible Motion, 5:55. <a href="/projects/explainer-films/">How the films are made</a>.</figcaption>
-  </figure>
+  <h2 data-under id="film">The field in 26 minutes</h2>
+  <p>An animated explainer of how a radar measures vibration, made with coding agents: why the phase of an echo is a ruler finer than a hair, how a chirp sorts echoes by distance, how many antennas add direction, and where the method works and where it struggles. <a href="/projects/explainer-films/">How the films are made</a>.</p>
+  <Film />
 
   <h2 data-under>In the lab</h2>
   <p>TI mmWave radars (AR1243, AWR2243 single and 4-chip cascade, IWR6843AOP) with DCA1000 capture boards, scripted through mmWave Studio. A laser displacement sensor as the reference, an electrodynamic shaker, a motorised slide table, a gravity pendulum, corner reflectors from tiny to large, and many 3D-printed fixtures. The lab's MATLAB toolbox is <a href="/projects/radar-toolbox/">mine</a>.</p>

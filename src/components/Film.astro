@@ -1,0 +1,47 @@
+---
+// "Seeing vibrations with radar", self-hosted (subtitles are burned into the picture), with a chapter list that seeks the video.
+interface Props { id?: string }
+const { id = 'film-player' } = Astro.props;
+const chapters: [number, string][] = [
+  [0, 'Everything shakes'],
+  [168, 'Phase: a ruler finer than a hair'],
+  [311, 'The chirp: sorting echoes by distance'],
+  [559, 'From phase to vibration'],
+  [806, 'Many antennas: telling directions apart'],
+  [1061, 'Putting it all together'],
+  [1272, 'Where it works, and where it struggles'],
+  [1533, 'Epilogue'],
+];
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+---
+<figure class="photo film" data-frame>
+  <video id={id} controls preload="none" poster="/media/seeing-vibrations.jpg" width="1920" height="1080">
+    <source src="/media/seeing-vibrations-with-radar.mp4" type="video/mp4">
+    <a href="/media/seeing-vibrations-with-radar.mp4">Download the film (MP4)</a>.
+  </video>
+  <figcaption>Seeing vibrations with radar, 26:38, eight chapters, English subtitles.</figcaption>
+</figure>
+<ol class="chapters" data-for={id} aria-label="Chapters">
+  {chapters.map(([t, title], i) => (
+    <li><button type="button" data-t={t}><span class="t">{mmss(t)}</span> {i < 7 ? `${i + 1}. ` : ''}{title}</button></li>
+  ))}
+</ol>
+<style>
+  .film video { width:100%; height:auto; display:block; position:relative; background:#11161c; }
+  .chapters { list-style:none; padding:0; margin:4px 0 24px; }
+  .chapters button { background:none; border:0; color:var(--ink); font:inherit; font-size:16px; line-height:1.5; text-align:left; padding:3px 4px 3px 4.2em; text-indent:-3.6em; cursor:pointer; width:100%; }
+  .chapters button:hover, .chapters button:focus-visible { background:var(--mark); }
+  .chapters .t { font-family:"Gaegu"; font-weight:700; font-size:19px; color:var(--pencil); font-variant-numeric:tabular-nums; display:inline-block; min-width:3.2em; }
+</style>
+<script>
+  document.querySelectorAll<HTMLOListElement>('ol.chapters').forEach((list) => {
+    const video = document.getElementById(list.dataset.for!) as HTMLVideoElement | null;
+    if (!video) return;
+    list.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button'); if (!b) return;
+      video.currentTime = Number(b.dataset.t);
+      video.play().catch(() => {});
+      video.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    });
+  });
+</script>
