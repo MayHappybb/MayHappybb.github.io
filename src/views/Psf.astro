@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import type { Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const t = (en: string, z: string) => (zh ? z : en);
+---
+<Base lang={lang} title={t('Array PSF designer', '阵列 PSF 设计器')} wide description={t(
+  'Design a MIMO radar antenna layout in your browser and see its virtual array, beam pattern, sidelobes, grating lobes and range-angle point-spread function.',
+  '在浏览器里设计 MIMO 雷达的天线布局，看它的虚拟阵列、波束方向图、旁瓣、栅瓣和距离角度点扩散函数。')}>
+  <h1>{t('Array PSF designer', '阵列 PSF 设计器')}</h1>
+  <p class="lead">{t('Where you put the antennas decides how sharply a radar can see.', '天线摆在哪里，决定了雷达能看得多清楚。')}</p>
+  <p>{t(
+    'A MIMO radar with M transmitters and N receivers behaves like M×N virtual antennas, each at the sum of a Tx and an Rx position. Their layout sets the point-spread function (PSF): how a single point target smears across angle. Start from a TI board or the 4-chip cascade we use in the lab, or click to place your own. Everything is computed in your browser by direct summation, so any geometry works, not only regular grids.',
+    '一台有 M 个发射天线和 N 个接收天线的 MIMO 雷达，相当于 M×N 个虚拟天线，每个虚拟天线的位置是一对发射和接收天线位置之和。它们的布局决定了点扩散函数（PSF），也就是一个点目标在角度上会被抹开多宽。可以从一块 TI 开发板或者我们实验室用的四片级联雷达开始，也可以自己点击摆放。所有计算都在你的浏览器里直接求和完成，所以任何形状都行，不只是规则的网格。')}</p>
+
+  <div class="tool">
+    <div class="panel controls" data-frame>
+      <fieldset>
+        <legend>{t('Array', '阵列')}</legend>
+        <label>{t('Start from', '从这里开始')} <select id="preset"></select></label>
+        <label>{t('Units', '单位')}
+          <select id="unit">
+            <option value="half">{t('half-wavelengths (λ/2)', '半波长（λ/2）')}</option>
+            <option value="lambda">{t('wavelengths (λ)', '波长（λ）')}</option>
+            <option value="mm">{t('millimetres', '毫米')}</option>
+          </select>
+        </label>
+        <label for="tx">{t('Tx positions, one "x y" per line', '发射天线的位置，每行一个“x y”')}</label>
+        <textarea id="tx" rows="5" spellcheck="false"></textarea>
+        <label for="rx">{t('Rx positions', '接收天线的位置')}</label>
+        <textarea id="rx" rows="5" spellcheck="false"></textarea>
+        <label><input type="checkbox" id="merge" checked> {t('Count overlapping virtual elements once', '重合的虚拟单元只算一次')}</label>
+        <p class="note" id="errs" role="alert"></p>
+      </fieldset>
+      <fieldset>
+        <legend>{t('Signal', '信号')}</legend>
+        <div class="row">
+          <label>{t('Carrier', '载频')} <input type="number" id="f0" min="1" max="300" step="0.25" value="77" style="width:5.5em"> GHz</label>
+          <label>{t('Bandwidth', '带宽')} <input type="number" id="bw" min="0.01" max="20" step="0.1" value="4" style="width:5em"> GHz</label>
+        </div>
+        <label>{t('Window (angle and range)', '窗函数（角度和距离都用）')}
+          <select id="win">
+            <option value="none">{t('none (uniform)', '不加窗（均匀）')}</option>
+            <option value="hann">Hann</option>
+            <option value="hamming">Hamming</option>
+            <option value="blackman">Blackman</option>
+          </select>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>{t('Steering and display', '波束指向和显示')}</legend>
+        <label>{t('Steer azimuth', '方位角指向')} <span class="val" data-val="az0">0°</span><input type="range" id="az0" min="-70" max="70" step="1" value="0"></label>
+        <label>{t('Steer elevation', '俯仰角指向')} <span class="val" data-val="el0">0°</span><input type="range" id="el0" min="-70" max="70" step="1" value="0"></label>
+        <label>{t('Dynamic range', '动态范围')} <span class="val" data-val="dyn">40 dB</span><input type="range" id="dyn" min="10" max="80" step="5" value="40"></label>
+      </fieldset>
+    </div>
+
+    <div class="stage">
+      <h3 style="margin-top:0">{t('Layout', '布局')}</h3>
+      <div class="row">
+        <label>{t('Click on the layout to', '在布局上点击，用来')}
+          <select id="click">
+            <option value="tx">{t('add a Tx', '添加发射天线')}</option>
+            <option value="rx">{t('add an Rx', '添加接收天线')}</option>
+            <option value="remove">{t('remove the nearest', '删除最近的天线')}</option>
+            <option value="none">{t('do nothing', '什么都不做')}</option>
+          </select>
+        </label>
+      </div>
+      <svg id="layout" class="plot" role="img" aria-label={t('Antenna layout: filled triangles are transmitters, open circles are receivers, grey dots are virtual elements', '天线布局：实心三角是发射天线，空心圆是接收天线，灰点是虚拟单元')} style="width:100%;cursor:crosshair;margin-top:8px"></svg>
+      <p class="note">{zh ? <>▲ 发射 &nbsp; ○ 接收 &nbsp; <span style="opacity:.7">●</span> 虚拟单元。网格：一个单位。</> : <>▲ Tx &nbsp; ○ Rx &nbsp; <span style="opacity:.7">●</span> virtual elements. Grid: one unit.</>}</p>
+
+      <div class="stats" id="stats" aria-live="polite"></div>
+      <p class="note" id="msg" aria-live="polite"></p>
+
+      <div class="photos2" style="align-items:start">
+        <div>
+          <h3>{t('Beam pattern', '波束方向图')}</h3>
+          <canvas id="uv" class="pixelated" style="width:100%;aspect-ratio:1" role="img" aria-label={t('Two-dimensional beam pattern over the visible hemisphere, darker is stronger', '可见半空间上的二维波束方向图，越深越强')}></canvas>
+          <p class="note">{t(
+            'The whole visible half-space seen from the front, in direction cosines: left–right is azimuth, up–down elevation, the rim is 90°. Darker means stronger.',
+            '从正前方看整个可见的半空间，坐标是方向余弦：左右是方位，上下是俯仰，边缘是 90°。颜色越深越强。')}</p>
+        </div>
+        <div>
+          <h3>{t('Range × azimuth', '距离 × 方位')}</h3>
+          <canvas id="ra" style="width:100%;aspect-ratio:1" role="img" aria-label={t('Range-azimuth point-spread function, darker is stronger', '距离方位点扩散函数，越深越强')}></canvas>
+          <p class="note" id="ralabel"></p>
+          <p class="note">{t(
+            'Far-field approximation: range and angle separate, so this is the range profile times the azimuth cut.',
+            '在远场近似下，距离和角度可以分开，所以这张图是距离像乘以方位切面。')}</p>
+        </div>
+      </div>
+
+      <h3>{t('Cuts through the beam', '波束切面')}</h3>
+      <svg id="cuts" class="plot" role="img" aria-label={t('Azimuth and elevation cuts of the beam pattern in decibels', '波束方向图的方位和俯仰切面，单位分贝')} style="width:100%"></svg>
+    </div>
+  </div>
+
+  <h2 data-under>{t('What to look for', '看点')}</h2>
+  {zh ? (
+    <>
+      <ul>
+        <li><strong>波束宽度</strong>随孔径变大而变窄：长度为 D 的均匀线阵约为 0.89 λ/D 弧度。级联雷达的 86 单元线阵大约是 1.2°。</li>
+        <li><strong>旁瓣</strong>：均匀线阵大约在 −13 dB；加 Hann 或 Hamming 窗能把旁瓣压下去，代价是主瓣变宽。</li>
+        <li><strong>栅瓣</strong>在单元间距大于 λ/2 时出现：试试“λ 间距”那个预设，再转动指向。</li>
+        <li><strong>俯仰</strong>只来自竖直方向的错开。xWR1843 抬高的 Tx2 带来四个抬高的虚拟单元，级联雷达还多几个。</li>
+        <li>虚拟阵列假设目标在远场，并且发射和接收天线的相位中心就在你摆的位置。真实的板子还需要相位校准。</li>
+      </ul>
+      <p class="note">第一个版本是我用 Python 写的，用来从一张天线布局的照片读出一个真实 12×16 阵列的 PSF。能画任意阵列方向图的工具，在我的点子罐里放了很久。</p>
+    </>
+  ) : (
+    <>
+      <ul>
+        <li><strong>Beamwidth</strong> shrinks as the aperture grows: about 0.89 λ/D radians for a uniform line of length D. The cascade's 86-element line gives roughly 1.2°.</li>
+        <li><strong>Sidelobes</strong>: a uniform line sits near −13 dB; a Hann or Hamming taper pushes them down and widens the main lobe.</li>
+        <li><strong>Grating lobes</strong> appear when elements are more than λ/2 apart: try the "λ spacing" preset, and steer it.</li>
+        <li><strong>Elevation</strong> comes only from vertical offsets. The xWR1843's raised Tx2 adds four elevated virtual elements; the cascade has a few more.</li>
+        <li>The virtual array assumes a far-field target and that the Tx and Rx phase centres are where you put them. Real boards also need phase calibration.</li>
+      </ul>
+      <p class="note">I wrote the first version in Python to read the PSF of a real 12×16 array from a photo of its antenna layout. A radiation-pattern viewer for any array had been on my ideas list for a while.</p>
+    </>
+  )}
+</Base>
+<script>
+  import '../scripts/tools/psf';
+</script>

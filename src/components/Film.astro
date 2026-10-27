@@ -1,29 +1,32 @@
 ---
 // "Seeing vibrations with radar", self-hosted (subtitles are burned into the picture), with a chapter list that seeks the video.
-interface Props { id?: string }
-const { id = 'film-player' } = Astro.props;
-const chapters: [number, string][] = [
-  [0, 'Everything shakes'],
-  [168, 'Phase: a ruler finer than a hair'],
-  [311, 'The chirp: sorting echoes by distance'],
-  [559, 'From phase to vibration'],
-  [806, 'Many antennas: telling directions apart'],
-  [1061, 'Putting it all together'],
-  [1272, 'Where it works, and where it struggles'],
-  [1533, 'Epilogue'],
+import { type Lang, type T, L } from '../i18n';
+interface Props { id?: string; lang: Lang }
+const { id = 'film-player', lang } = Astro.props;
+// the film's own chapter titles; Chinese ones translate them (the film is in English)
+const chapters: [number, T][] = [
+  [0, { en: 'Everything shakes', zh: '万物都在振动' }],
+  [168, { en: 'Phase: a ruler finer than a hair', zh: '相位：一把比头发丝还细的尺子' }],
+  [311, { en: 'The chirp: sorting echoes by distance', zh: 'Chirp：按距离把回波分开' }],
+  [559, { en: 'From phase to vibration', zh: '从相位到振动' }],
+  [806, { en: 'Many antennas: telling directions apart', zh: '多根天线：分辨方向' }],
+  [1061, { en: 'Putting it all together', zh: '把一切串起来' }],
+  [1272, { en: 'Where it works, and where it struggles', zh: '哪里好用，哪里吃力' }],
+  [1533, { en: 'Epilogue', zh: '尾声' }],
 ];
+const zh = lang === 'zh';
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 ---
 <figure class="photo film" data-frame>
   <video id={id} controls preload="none" poster="/media/seeing-vibrations.jpg" width="1920" height="1080">
     <source src="/media/seeing-vibrations-with-radar.mp4" type="video/mp4">
-    <a href="/media/seeing-vibrations-with-radar.mp4">Download the film (MP4)</a>.
+    <a href="/media/seeing-vibrations-with-radar.mp4">{zh ? '下载影片（MP4）' : 'Download the film (MP4)'}</a>.
   </video>
-  <figcaption>Seeing vibrations with radar, 26:38, eight chapters, English subtitles.</figcaption>
+  <figcaption>{zh ? 'Seeing vibrations with radar（用雷达看见振动），26:38，共八章，英文旁白和英文字幕。' : 'Seeing vibrations with radar, 26:38, eight chapters, English subtitles.'}</figcaption>
 </figure>
-<ol class="chapters" data-for={id} aria-label="Chapters">
+<ol class="chapters" data-for={id} aria-label={zh ? '章节' : 'Chapters'}>
   {chapters.map(([t, title], i) => (
-    <li><button type="button" data-t={t}><span class="t">{mmss(t)}</span> {i < 7 ? `${i + 1}. ` : ''}{title}</button></li>
+    <li><button type="button" data-t={t}><span class="t">{mmss(t)}</span> {i < 7 ? `${i + 1}. ` : ''}{L(lang, title)}</button></li>
   ))}
 </ol>
 <style>

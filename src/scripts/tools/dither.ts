@@ -1,5 +1,9 @@
 // Dithering studio: picture in, 1-bit pixels / dots / symbols out, as PNG or SVG. Runs entirely in the browser.
 import { KERNELS, diffuse, bayer, ordered, voidAndCluster, threshold } from './dither-core';
+// the page's language decides the words (Chinese pages live under /zh/)
+const ZH = document.documentElement.lang.startsWith('zh');
+const tr = (en: string, zh: string) => (ZH ? zh : en);
+
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const els = {
@@ -20,7 +24,7 @@ let last: { mask: Uint8Array; grey: Float32Array; w: number; h: number } | null 
 function loadImage(src: string) {
   const im = new Image();
   im.onload = () => { img = im; els.original.src = src; schedule(); };
-  im.onerror = () => { els.status.textContent = "That file couldn't be read as an image. Try a JPEG, PNG or WebP."; };
+  im.onerror = () => { els.status.textContent = tr("That file couldn't be read as an image. Try a JPEG, PNG or WebP.", '这个文件读不出图片。试试 JPEG、PNG 或 WebP。'); };
   im.src = src;
 }
 

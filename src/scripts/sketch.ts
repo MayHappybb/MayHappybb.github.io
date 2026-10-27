@@ -150,7 +150,8 @@ export function initSketch() {
   const label = document.getElementById('switchlabel');
   const sync = () => {
     const dark = document.documentElement.classList.contains('dark');
-    if (label) label.textContent = dark ? 'lights on' : 'lights off';
+    // the labels come from the button, in the page's language
+    if (label) label.textContent = (dark ? btn?.dataset.on : btn?.dataset.off) ?? (dark ? 'lights on' : 'lights off');
     btn?.setAttribute('aria-pressed', String(dark));
   };
   sync();
@@ -161,6 +162,9 @@ export function initSketch() {
     // wait for the colour transition to pick the new ink
     setTimeout(redrawAll, 30);
   });
+  // the 中文/EN link: remember the choice, so other pages (and the gallery's header) follow it
+  document.querySelectorAll<HTMLAnchorElement>('a[data-lang]').forEach((a) =>
+    a.addEventListener('click', () => { try { localStorage.setItem('lang', a.dataset.lang!); } catch { /* private mode */ } }));
   let rt: number | undefined;
   addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(() => drawBits(), 200); });
   document.fonts.ready.then(redrawAll);

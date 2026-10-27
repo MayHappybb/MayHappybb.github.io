@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { firstAuthor } from '../data/papers';
+import { ideas } from '../data/ideas';
+import { getProjects, getNotes } from '../lib/content';
+import { type Lang, L, UI, lp } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const p = (href: string) => lp(lang, href);
+
+const projects = (await getProjects(lang)).filter((x) => x.data.featured).sort((a, b) => +b.data.date - +a.data.date);
+const notes = (await getNotes(lang)).sort((a, b) => +b.data.date - +a.data.date).slice(0, 4);
+// a few that became something, then the newest open ones
+const jar = [...ideas.filter((i) => i.state === 'done').slice(1, 3), ...ideas.filter((i) => i.state === 'open').slice(-4)];
+---
+<Base lang={lang}>
+  <svg id="hero" viewBox="0 0 700 310" role="img" aria-label={zh ? '一幅手绘：一台小雷达向扬声器前的薄箔发出电波，桌上的小屏幕显示着时间' : 'A drawing: a small radar sends waves to a thin foil in front of a speaker, and a tiny clock screen on a desk shows the time'}></svg>
+
+  {zh ? (
+    <>
+      <h1>嗨，我是海彬。</h1>
+      <p class="lead">我用无线电波感知物体表面微米级的振动，也喜欢做些会闪的小东西。</p>
+      <p class="small">上海交通大学机械系统与振动全国重点实验室博士生。在这之前，我在哈尔滨工业大学（深圳）读机械，做机器人。</p>
+    </>
+  ) : (
+    <>
+      <h1>Hi, I'm Haibin.</h1>
+      <p class="lead">I use radio waves to feel surfaces move by a micrometre, and I build small things that blink.</p>
+      <p class="small">PhD candidate at Shanghai Jiao Tong University, State Key Laboratory of Mechanical System and Vibration. Before that, mechanical engineering and robots at Harbin Institute of Technology, Shenzhen.</p>
+    </>
+  )}
+
+  <h2 data-under>{zh ? '最近在做' : 'Now'}</h2>
+  {zh ? (
+    <ul class="list">
+      <li data-icon="spiral"><span class="title">用一台雷达测三维振动</span>我的博士课题。一个沿直线运动的目标，测出来却是一条螺旋线；原因是静态杂波，我正在把它建模消掉。<a href={p('/notes/the-spiral/')}>来龙去脉</a>。</li>
+      <li data-icon="clock"><span class="title">教智能体给小屏幕设计时钟</span>已经有 561 个表盘，给字符 LCD、OLED、160×80 的彩色小屏和 LED 点阵用。<a href="https://mayhappybb.github.io/clock-skills/gallery/">看它们一起走</a>。</li>
+      <li data-icon="chip"><span class="title">用手机给 ESP32 编程</span>板子只要用数据线烧录一次，之后任何 AI 智能体都能远程编译并无线烧录新代码。<a href={p('/projects/esp-agent/')}>怎么做到的</a>。</li>
+      <li data-icon="work"><span class="title">在 AI 视频智能体团队实习</span>2026 年 9 月起在哔哩哔哩实习，学习 LLM 智能体在真实产品里会怎样出错。<a href={p('/about/#internship')}>我学到了什么</a>。</li>
+    </ul>
+  ) : (
+    <ul class="list">
+      <li data-icon="spiral"><span class="title">Measuring 3D vibration with one radar</span>My thesis. A target that moves on a straight line came out as a spiral; it was static clutter, and I'm modelling it away. <a href="/notes/the-spiral/">The story so far</a>.</li>
+      <li data-icon="clock"><span class="title">Teaching agents to design clocks for tiny screens</span>561 faces so far, for character LCDs, OLEDs, a 160×80 TFT and LED panels. <a href="https://mayhappybb.github.io/clock-skills/gallery/">See them all ticking</a>.</li>
+      <li data-icon="chip"><span class="title">Programming ESP32 boards from a phone</span>Flash a board once; after that any AI agent can build and flash new code over the air. <a href="/projects/esp-agent/">How it works</a>.</li>
+      <li data-icon="work"><span class="title">Interning on an AI video agent team</span>At bilibili since September 2026, learning how LLM agents fail in production. <a href="/about/#internship">What I'm learning</a>.</li>
+    </ul>
+  )}
+
+  <h2 data-under>{zh ? '研究' : 'Research'}</h2>
+  <ul class="list">
+    {firstAuthor.map((x) => (
+      <li data-icon={x.icon}><span class="title">{L(lang, x.question)}</span><span class="where">{x.venue.split(/ \d/)[0]}{zh ? '，' : ', '}{x.year}{zh ? '，' : ', '}{L(lang, UI.firstAuthor)}</span></li>
+    ))}
+    <li data-icon="star">
+      <span class="title">{zh ? 'ICSMD 2025 最佳论文奖（合作作者）' : 'Best Paper Award, ICSMD 2025 (co-author)'}</span>
+      <span class="where">{zh ? '用微波振动测量实现远距离主动声学感知' : 'Long-range active acoustic sensing with microwaves'}</span>
+    </li>
+  </ul>
+  <p style="margin-top:12px"><a href={p('/research/')}>{zh ? '全部 12 篇论文、两项专利，还有一路上的拒稿' : 'All 12 papers, two patents, and the rejections along the way'}</a></p>
+
+  <h2 data-under>{zh ? '动手试试' : 'Try something'}</h2>
+  {zh ? (
+    <ul class="list">
+      <li data-icon="dots"><span class="title"><a href={p('/tools/dither/')}>抖动工作室</a></span>把照片变成点、符号或 1 位像素，还能导出给绘图仪用的 SVG。</li>
+      <li data-icon="array"><span class="title"><a href={p('/tools/psf/')}>阵列 PSF 设计器</a></span>摆放雷达天线，看看虚拟阵列长什么样，能看得多清楚。</li>
+      <li data-icon="face"><span class="title"><a href={p('/tools/facemorph/')}>人脸融合</a></span>用你自己的照片做平均脸或渐变。照片不会离开你的浏览器。</li>
+      <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">走直线（Straight Line）</a></span>写 Python，让一辆歪歪扭扭的小车走直线。</li>
+    </ul>
+  ) : (
+    <ul class="list">
+      <li data-icon="dots"><span class="title"><a href="/tools/dither/">Dithering studio</a></span>Turn a photo into dots, symbols or 1-bit pixels, and export SVG for a plotter.</li>
+      <li data-icon="array"><span class="title"><a href="/tools/psf/">Array PSF designer</a></span>Place radar antennas, see the virtual array and how sharply it can see.</li>
+      <li data-icon="face"><span class="title"><a href="/tools/facemorph/">Face morph</a></span>Average or morph faces from your own photos. They never leave your browser.</li>
+      <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">Straight Line</a></span>Write Python to make a wobbly toy car drive straight.</li>
+    </ul>
+  )}
+
+  <h2 data-under>{zh ? '我做过的东西' : 'Things I made'}</h2>
+  <div class="cards breakout">
+    {projects.map((x) => <ProjectCard project={x} lang={lang} />)}
+  </div>
+  <p style="margin-top:20px"><a href={p('/projects/')}>{zh ? '全部作品，一直到 2019 年' : 'Everything, back to 2019'}</a></p>
+
+  <h2 data-under>{zh ? '点子罐' : 'Ideas jar'}</h2>
+  <p class="small">{zh ? '随手记下的点子。打勾的已经做出来了。' : 'Things I wrote down. A tick means it became something.'}</p>
+  <ul class="list jar">
+    {jar.map((i) => <li data-done={i.state === 'done' ? '' : undefined}>{i.href ? <a href={p(i.href)}>{L(lang, i.text)}</a> : L(lang, i.text)}</li>)}
+  </ul>
+  <p style="margin-top:12px"><a href={p('/notes/#ideas')}>{zh ? '整罐点子' : 'The whole jar'}</a></p>
+
+  <h2 data-under>{L(lang, UI.notes)}</h2>
+  <ul class="list">
+    {notes.map((n) => <li data-icon={n.data.icon}><span class="title"><a href={p(`/notes/${n.id}/`)}>{n.data.title}</a></span>{n.data.summary}</li>)}
+  </ul>
+</Base>
+<script>
+  import { initHero } from '../scripts/hero';
+  initHero();
+</script>

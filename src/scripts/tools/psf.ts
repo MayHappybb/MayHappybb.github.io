@@ -2,6 +2,10 @@
 import { virtualArray, weights, dirCos, lobeStats, gratingLobes, type Pt } from './psf-core';
 import { css } from '../sketch';
 import PsfWorker from './psf-worker.ts?worker';
+// the page's language decides the words (Chinese pages live under /zh/)
+const ZH = document.documentElement.lang.startsWith('zh');
+const tr = (en: string, zh: string) => (ZH ? zh : en);
+
 
 const C = 299_792_458;
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -18,22 +22,22 @@ const el = {
 // Presets in half-wavelength units (x to the right, y up), as published by TI or measured in our lab.
 const range = (n: number, f: (i: number) => Pt) => Array.from({ length: n }, (_, i) => f(i));
 const PRESETS: Record<string, { label: string; tx: Pt[]; rx: Pt[]; f0: number; bw: number }> = {
-  xwr1843: { label: 'TI xWR1843 / xWR1443 BOOST (3 Tx, 4 Rx)', tx: [[0, 0], [2, 1], [4, 0]], rx: range(4, (i) => [i, 0]), f0: 77, bw: 4 },
+  xwr1843: { label: tr('TI xWR1843 / xWR1443 BOOST (3 Tx, 4 Rx)', 'TI xWR1843 / xWR1443 BOOST（3 发 4 收）'), tx: [[0, 0], [2, 1], [4, 0]], rx: range(4, (i) => [i, 0]), f0: 77, bw: 4 },
   aop: {
-    label: 'TI IWR6843AOP (3 Tx, 4 Rx, as mounted in our lab)',
+    label: tr('TI IWR6843AOP (3 Tx, 4 Rx, as mounted in our lab)', 'TI IWR6843AOP（3 发 4 收，按我们实验室的安装方向）'),
     tx: [[0, -2], [-2, 0], [0, 0]], rx: [[0, 1], [0, 0], [1, 1], [1, 0]], f0: 61.75, bw: 3.5,
   },
   cascade: {
-    label: 'TI MMWCAS 4-chip cascade (12 Tx, 16 Rx)',
+    label: tr('TI MMWCAS 4-chip cascade (12 Tx, 16 Rx)', 'TI MMWCAS 四片级联（12 发 16 收）'),
     tx: [11, 10, 9, 32, 28, 24, 20, 16, 12, 8, 4, 0].map((x, i) => [x, [6, 4, 1][i] ?? 0] as Pt),
     rx: [11, 12, 13, 14, 50, 51, 52, 53, 46, 47, 48, 49, 0, 1, 2, 3].map((x) => [x, 0] as Pt), f0: 77, bw: 1,
   },
-  ula8: { label: 'Uniform line, 1 Tx, 8 Rx', tx: [[0, 0]], rx: range(8, (i) => [i, 0]), f0: 77, bw: 4 },
-  ula8wide: { label: 'Line with λ spacing (grating lobes)', tx: [[0, 0]], rx: range(8, (i) => [2 * i, 0]), f0: 77, bw: 4 },
-  ura: { label: 'Square 8×8, 2 Tx, 32 Rx', tx: [[0, 0], [0, 4]], rx: range(32, (i) => [i % 8, Math.floor(i / 8)]), f0: 77, bw: 4 },
+  ula8: { label: tr('Uniform line, 1 Tx, 8 Rx', '均匀线阵，1 发 8 收'), tx: [[0, 0]], rx: range(8, (i) => [i, 0]), f0: 77, bw: 4 },
+  ula8wide: { label: tr('Line with λ spacing (grating lobes)', 'λ 间距线阵（会有栅瓣）'), tx: [[0, 0]], rx: range(8, (i) => [2 * i, 0]), f0: 77, bw: 4 },
+  ura: { label: tr('Square 8×8, 2 Tx, 32 Rx', '8×8 方阵，2 发 32 收'), tx: [[0, 0], [0, 4]], rx: range(32, (i) => [i % 8, Math.floor(i / 8)]), f0: 77, bw: 4 },
 };
 for (const [k, p] of Object.entries(PRESETS)) el.preset.add(new Option(p.label, k));
-el.preset.add(new Option('Custom (edit below)', 'custom'));
+el.preset.add(new Option(tr('Custom (edit below)', '自定义（在下面编辑）'), 'custom'));
 
 const fmt = (p: Pt[]) => p.map(([x, y]) => `${+x.toFixed(3)} ${+y.toFixed(3)}`).join('\n');
 function parse(s: string, name: string, errs: string[]): Pt[] {
@@ -41,7 +45,7 @@ function parse(s: string, name: string, errs: string[]): Pt[] {
   s.split('\n').forEach((line, i) => {
     const t = line.replace(/#.*/, '').trim(); if (!t) return;
     const n = t.split(/[\s,;]+/).map(Number);
-    if (n.length < 1 || n.length > 2 || n.some((v) => !Number.isFinite(v))) { errs.push(`${name} line ${i + 1}: expected "x y"`); return; }
+    if (n.length < 1 || n.length > 2 || n.some((v) => !Number.isFinite(v))) { errs.push(tr(`${name} line ${i + 1}: expected "x y"`, `${name === 'Tx' ? '发射天线' : '接收天线'}第 ${i + 1} 行：应为“x y”`)); return; }
     out.push([n[0], n[1] ?? 0]);
   });
   return out;
@@ -70,10 +74,10 @@ function update() {
   const errs: string[] = [];
   tx = parse(el.tx.value, 'Tx', errs); rx = parse(el.rx.value, 'Rx', errs);
   const f0 = +el.f0.value, B = +el.bw.value * 1e9;
-  if (!(f0 > 0)) errs.push('Carrier must be positive.');
-  if (!(B > 0)) errs.push('Bandwidth must be positive.');
-  if (!tx.length || !rx.length) errs.push('Add at least one Tx and one Rx.');
-  if (tx.length * rx.length > 4096) errs.push('More than 4096 virtual elements: please use fewer.');
+  if (!(f0 > 0)) errs.push(tr('Carrier must be positive.', '载频必须大于零。'));
+  if (!(B > 0)) errs.push(tr('Bandwidth must be positive.', '带宽必须大于零。'));
+  if (!tx.length || !rx.length) errs.push(tr('Add at least one Tx and one Rx.', '至少要有一个发射天线和一个接收天线。'));
+  if (tx.length * rx.length > 4096) errs.push(tr('More than 4096 virtual elements: please use fewer.', '虚拟单元超过 4096 个，请减少一些。'));
   el.errs.textContent = errs.join(' ');
   drawLayout();
   if (errs.length) return;
@@ -86,16 +90,16 @@ function update() {
   const drMax = 8 * resR;
   const dr = Float64Array.from({ length: 161 }, (_, i) => -drMax + (2 * drMax * i) / 160);
   ctx = { u0, v0, az0, el0: e0, resR, drMax };
-  el.msg.textContent = 'Computing…';
+  el.msg.textContent = tr('Computing…', '计算中…');
   worker.postMessage({ id: ++jobId, el: w, u0, v0, az0, el0: e0, n: N, angles, B, rangeWin: el.win.value, dr });
   // aperture numbers now
   const xs = va.map((p) => p.x), ys = va.map((p) => p.y);
   const ap = [Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)];
   stats.base = {
-    'Virtual elements': `${va.length}${el.merge.checked ? ' unique' : ''} (${tx.length} × ${rx.length})`,
-    'Aperture': `${ap[0].toFixed(1)} λ × ${ap[1].toFixed(1)} λ`,
-    'Wavelength': `${((C / (f0 * 1e9)) * 1e3).toFixed(2)} mm`,
-    'Range resolution': `${(resR * 100).toFixed(2)} cm`,
+    [tr('Virtual elements', '虚拟单元')]: `${va.length}${el.merge.checked ? tr(' unique', ' 个不重复') : ''} (${tx.length} × ${rx.length})`,
+    [tr('Aperture', '孔径')]: `${ap[0].toFixed(1)} λ × ${ap[1].toFixed(1)} λ`,
+    [tr('Wavelength', '波长')]: `${((C / (f0 * 1e9)) * 1e3).toFixed(2)} mm`,
+    [tr('Range resolution', '距离分辨率')]: `${(resR * 100).toFixed(2)} cm`,
   };
 }
 
@@ -114,14 +118,14 @@ worker.onmessage = (e) => {
   const a = lobeStats(angles, azCut, iAz), b = lobeStats(angles, elCut, iEl);
   const flatEl = elCut.every((v) => Math.abs(v - elCut[0]) < 1e-6);
   stats.beam = {
-    'Azimuth beamwidth (−3 dB)': `${a.width.toFixed(2)}°`,
-    'Azimuth peak sidelobe': Number.isFinite(a.psl) ? `${a.psl.toFixed(1)} dB` : 'none',
-    'Elevation beamwidth (−3 dB)': flatEl ? 'no elevation aperture' : `${b.width.toFixed(2)}°`,
-    'Elevation peak sidelobe': flatEl ? '—' : Number.isFinite(b.psl) ? `${b.psl.toFixed(1)} dB` : 'none',
+    [tr('Azimuth beamwidth (−3 dB)', '方位波束宽度（−3 dB）')]: `${a.width.toFixed(2)}°`,
+    [tr('Azimuth peak sidelobe', '方位最高旁瓣')]: Number.isFinite(a.psl) ? `${a.psl.toFixed(1)} dB` : tr('none', '无'),
+    [tr('Elevation beamwidth (−3 dB)', '俯仰波束宽度（−3 dB）')]: flatEl ? tr('no elevation aperture', '俯仰方向没有孔径') : `${b.width.toFixed(2)}°`,
+    [tr('Elevation peak sidelobe', '俯仰最高旁瓣')]: flatEl ? '—' : Number.isFinite(b.psl) ? `${b.psl.toFixed(1)} dB` : tr('none', '无'),
   };
   // grating lobes: strong peaks elsewhere in the visible region
   const gl = gratingLobes(map, N, ctx.u0, ctx.v0);
-  showStats(gl.length ? `Grating lobes: ${gl.length} other peak${gl.length > 1 ? 's' : ''} within 3 dB of the main beam (spacing wider than λ/2?).` : '');
+  showStats(gl.length ? tr(`Grating lobes: ${gl.length} other peak${gl.length > 1 ? 's' : ''} within 3 dB of the main beam (spacing wider than λ/2?).`, `栅瓣：还有 ${gl.length} 个峰和主瓣相差不到 3 dB（间距是不是大于 λ/2 了？）`) : '');
   drawMap(map); drawCuts(azCut, elCut, flatEl); drawRA(azCut, rng);
 };
 
@@ -218,7 +222,7 @@ function drawCuts(azCut: Float64Array, elCut: Float64Array, flatEl: boolean) {
     mk('line', { x1: L, y1: Y(z), x2: W - R, y2: Y(z), stroke: pencil, 'stroke-opacity': 0.3 }, svg);
     mk('text', { x: L - 6, y: Y(z) + 4, 'text-anchor': 'end', 'font-size': 13, fill: pencil }, svg).textContent = `${z}`;
   }
-  mk('text', { x: L, y: H - 4, 'font-size': 13, fill: pencil }, svg).textContent = 'angle · dB';
+  mk('text', { x: L, y: H - 4, 'font-size': 13, fill: pencil }, svg).textContent = tr('angle · dB', '角度 · dB');
   const line = (y: Float64Array, attrs: Record<string, string | number>) => {
     let d = ''; for (let i = 0; i < angles.length; i++) d += `${i ? 'L' : 'M'}${X(angles[i]).toFixed(1)} ${Y(y[i]).toFixed(1)}`;
     mk('path', { d, fill: 'none', stroke: ink, 'stroke-width': 1.6, ...attrs }, svg);
@@ -227,10 +231,10 @@ function drawCuts(azCut: Float64Array, elCut: Float64Array, flatEl: boolean) {
   if (!flatEl) line(elCut, { 'stroke-dasharray': '5 4', 'stroke-width': 1.3 });
   const lg = mk('g', { 'font-size': 14, fill: ink }, svg);
   mk('line', { x1: W - 330, y1: H - 9, x2: W - 300, y2: H - 9, stroke: ink, 'stroke-width': 1.6 }, lg);
-  mk('text', { x: W - 294, y: H - 5 }, lg).textContent = 'azimuth cut';
+  mk('text', { x: W - 294, y: H - 5 }, lg).textContent = tr('azimuth cut', '方位切面');
   if (!flatEl) {
     mk('line', { x1: W - 180, y1: H - 9, x2: W - 150, y2: H - 9, stroke: ink, 'stroke-width': 1.3, 'stroke-dasharray': '5 4' }, lg);
-    mk('text', { x: W - 144, y: H - 5 }, lg).textContent = 'elevation cut';
+    mk('text', { x: W - 144, y: H - 5 }, lg).textContent = tr('elevation cut', '俯仰切面');
   }
 }
 
@@ -246,7 +250,7 @@ function drawRA(azCut: Float64Array, rng: Float64Array) {
   }
   g.putImageData(id, 0, 0);
   const lab = document.getElementById('ralabel');
-  if (lab && ctx) lab.textContent = `Range ±${(ctx.drMax * 100).toFixed(1)} cm (8 resolution cells) around the target, azimuth −90° to 90°.`;
+  if (lab && ctx) lab.textContent = tr(`Range ±${(ctx.drMax * 100).toFixed(1)} cm (8 resolution cells) around the target, azimuth −90° to 90°.`, `距离为目标前后 ±${(ctx.drMax * 100).toFixed(1)} cm（8 个分辨单元），方位从 −90° 到 90°。`);
 }
 
 // ---------- wiring ----------

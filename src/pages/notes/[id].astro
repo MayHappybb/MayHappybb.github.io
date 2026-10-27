@@ -1,21 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
+import Note from '../../views/Note.astro';
+import { getNotes } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes');
-  return notes.map((n) => ({ params: { id: n.id }, props: { note: n } }));
+  return (await getNotes('en')).map((x) => ({ params: { id: x.id }, props: { note: x } }));
 }
 const { note } = Astro.props;
-const { Content } = await render(note);
-const date = note.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Shanghai' });
 ---
-<Base title={note.data.title} description={note.data.summary}>
-  <article>
-    <p class="small"><a href="/notes/">Notes</a> · <time datetime={note.data.date.toISOString().slice(0, 10)}>{date}</time></p>
-    <h1>{note.data.title}</h1>
-    <p class="lead">{note.data.summary}</p>
-    <div class="prose"><Content /></div>
-  </article>
-  <p style="margin-top:40px"><a href="/notes/">All notes</a></p>
-</Base>
+<Note lang="en" note={note} />

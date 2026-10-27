@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import { type Lang, lp } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const p = (href: string) => lp(lang, href);
+---
+<Base lang={lang} title={zh ? '工具' : 'Tools'} description={zh
+  ? '在浏览器里就能用的小工具：抖动工作室、雷达阵列 PSF 设计器、人脸融合等。'
+  : 'Small tools that run in your browser: a dithering studio, a radar array PSF designer, face morphing, and more.'}>
+  {zh ? (
+    <>
+      <h1>工具</h1>
+      <p class="lead">现在就能用的东西。它们都在你的浏览器里运行，你载入的任何东西都不会被上传。</p>
+      <ul class="list">
+        <li data-icon="dots"><span class="title"><a href={p('/tools/dither/')}>抖动工作室</a></span>把图片变成 1 位像素、网点或符号。支持 Floyd–Steinberg、Atkinson、Stucki、Bayer 和蓝噪声。可以导出 PNG，或者给绘图仪和激光切割机用的 SVG。</li>
+        <li data-icon="array"><span class="title"><a href={p('/tools/psf/')}>阵列 PSF 设计器</a></span>摆放 MIMO 雷达的发射和接收天线，或者载入 TI 开发板的布局，看虚拟阵列、波束方向图和它的旁瓣。</li>
+        <li data-icon="face"><span class="title"><a href={p('/tools/facemorph/')}>人脸融合</a></span>用你自己的照片，把几张脸平均，或者让一张脸渐变成另一张。</li>
+      </ul>
+
+      <h2 data-under>别处</h2>
+      <ul class="list">
+        <li data-icon="clock"><span class="title"><a href="https://mayhappybb.github.io/clock-skills/gallery/">时钟表盘画廊</a></span>561 个为小屏幕设计的动态表盘，还有设计它们时用的<a href="https://mayhappybb.github.io/clock-skills/">模拟器</a>。页面是英文的。</li>
+        <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">走直线（Straight Line）</a></span>一个控制挑战：写 Python 让一辆陀螺仪会漂的小车走直线，还有排行榜。页面是英文的。</li>
+        <li data-icon="house"><span class="title"><a href="https://mayhappybb.github.io/hsbc-one-calculator/">汇丰 One 账户余额计算器</a></span>算出还要存多少钱，才能满足开户前三个月的平均余额要求。</li>
+        <li data-icon="key"><span class="title">在自己的屏幕上显示交我办校园码</span>不用官方 App 也能显示上海交通大学的身份码。因为需要用你自己的账号登录，它会以一个小仓库的形式发布，在你自己的电脑上运行。</li>
+      </ul>
+    </>
+  ) : (
+    <>
+      <h1>Tools</h1>
+      <p class="lead">Things you can use right now. They run in your browser; nothing you load is uploaded anywhere.</p>
+      <ul class="list">
+        <li data-icon="dots"><span class="title"><a href="/tools/dither/">Dithering studio</a></span>Turn a picture into 1-bit pixels, dots or symbols. Floyd–Steinberg, Atkinson, Stucki, Bayer, blue noise. Export PNG, or SVG for a pen plotter or a laser.</li>
+        <li data-icon="array"><span class="title"><a href="/tools/psf/">Array PSF designer</a></span>Place the transmit and receive antennas of a MIMO radar, or load a TI layout, and see the virtual array, the beam pattern and its sidelobes.</li>
+        <li data-icon="face"><span class="title"><a href="/tools/facemorph/">Face morph</a></span>Average several faces or morph one into another, from your own photos.</li>
+      </ul>
+
+      <h2 data-under>Elsewhere</h2>
+      <ul class="list">
+        <li data-icon="clock"><span class="title"><a href="https://mayhappybb.github.io/clock-skills/gallery/">Clock-face gallery</a></span>561 animated faces for tiny displays, and the <a href="https://mayhappybb.github.io/clock-skills/">simulators</a> they were designed on.</li>
+        <li data-icon="car"><span class="title"><a href="https://mayhappybb.github.io/straight-line/">Straight Line</a></span>A control challenge: write Python to keep a drifting toy car straight, with a leaderboard.</li>
+        <li data-icon="house"><span class="title"><a href="https://mayhappybb.github.io/hsbc-one-calculator/">HSBC One balance calculator</a></span>How much to deposit to meet the three-month average balance.</li>
+        <li data-icon="key"><span class="title">JAccount QR on your own screen</span>Show the SJTU campus identity code without the official app. Coming as a small repository you run yourself, since it needs your own login.</li>
+      </ul>
+    </>
+  )}
+</Base>

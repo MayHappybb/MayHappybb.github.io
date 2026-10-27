@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import type { Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const t = (en: string, z: string) => (zh ? z : en);
+---
+<Base lang={lang} title={t('Dithering studio', '抖动工作室')} wide description={t(
+  'Turn any picture into 1-bit pixels, halftone dots or symbols in your browser. Floyd–Steinberg, Atkinson, Stucki, Bayer, blue noise. Export PNG or SVG.',
+  '在浏览器里把任何图片变成 1 位像素、网点或符号。支持 Floyd–Steinberg、Atkinson、Stucki、Bayer 和蓝噪声，可导出 PNG 或 SVG。')}>
+  <h1>{t('Dithering studio', '抖动工作室')}</h1>
+  <p class="lead">{t('Two colours, and the illusion of every grey in between.', '只有两种颜色，却能看出所有的灰。')}</p>
+  <p>{t(
+    "Dithering decides, pixel by pixel, ink or paper, so that from a step back the average looks right. Error diffusion (Floyd–Steinberg and friends) pushes each pixel's rounding error onto its neighbours. Ordered dithering compares each pixel with a fixed pattern: Bayer's matrix gives the classic crosshatch, blue noise looks like fine grain. Your picture stays in your browser.",
+    '抖动就是逐个像素地决定上墨还是留白，让人退后一步看时，整体的明暗是对的。误差扩散（Floyd–Steinberg 一类）把每个像素取整时的误差推给周围的像素。有序抖动拿每个像素和一个固定图案比较：Bayer 矩阵给出经典的交叉网纹，蓝噪声看起来像细腻的颗粒。你的图片只留在你的浏览器里。')}</p>
+
+  <div class="tool">
+    <div class="panel controls" id="controls" data-frame>
+      <div class="drop" id="drop" data-sample="/media/sample-voron.jpg">
+        <label for="file">{zh ? <><strong>选一张图片</strong>，拖到这里，或者直接粘贴。</> : <><strong>Choose a picture</strong>, drop it here, or paste it.</>}</label>
+        <input type="file" id="file" accept="image/*" class="sr">
+        <span class="note">{t('It starts with my Voron printer.', '先拿我的 Voron 打印机做示例。')}</span>
+      </div>
+
+      <fieldset>
+        <legend>{t('Look', '外观')}</legend>
+        <label>{t('Render as', '渲染成')}
+          <select id="mode">
+            <option value="pixels">{t('1-bit pixels', '1 位像素')}</option>
+            <option value="dots">{t('halftone dots', '半色调网点')}</option>
+            <option value="symbols">{t('symbols', '符号')}</option>
+          </select>
+        </label>
+        <label data-for-mode="pixels">{t('Algorithm', '算法')}
+          <select id="algo">
+            <optgroup label={t('Error diffusion', '误差扩散')}>
+              <option value="floyd-steinberg">Floyd–Steinberg</option>
+              <option value="atkinson" selected>Atkinson</option>
+              <option value="jarvis-judice-ninke">Jarvis, Judice, Ninke</option>
+              <option value="stucki">Stucki</option>
+              <option value="burkes">Burkes</option>
+              <option value="sierra">Sierra</option>
+              <option value="sierra-lite">Sierra Lite</option>
+            </optgroup>
+            <optgroup label={t('Ordered', '有序抖动')}>
+              <option value="bayer2">Bayer 2×2</option>
+              <option value="bayer4">Bayer 4×4</option>
+              <option value="bayer8">Bayer 8×8</option>
+              <option value="bayer16">Bayer 16×16</option>
+              <option value="blue">{t('Blue noise (void and cluster)', '蓝噪声（void and cluster）')}</option>
+            </optgroup>
+            <option value="threshold">{t('Plain threshold', '普通阈值')}</option>
+          </select>
+        </label>
+        <label data-for-mode="pixels"><input type="checkbox" id="serp" checked> {t('Serpentine scan (error diffusion)', '蛇形扫描（误差扩散用）')}</label>
+        <label>{t('Width', '宽度')} <span class="val" data-val="width"></span>
+          <input type="range" id="width" min="40" max="1200" step="10" value="420">
+        </label>
+        <label data-for-mode="dots symbols">{t('Cell size', '格子大小')} <span class="val" data-val="cell"></span>
+          <input type="range" id="cell" min="4" max="24" step="1" value="8">
+        </label>
+        <label data-for-mode="symbols">{t('Symbols, light to dark', '符号，从浅到深')}
+          <input type="text" id="chars" value=" .:-=+*#%@" spellcheck="false">
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>{t('Tone', '色调')}</legend>
+        <label>{t('Brightness', '亮度')} <span class="val" data-val="bright"></span>
+          <input type="range" id="bright" min="-0.5" max="0.5" step="0.01" value="0">
+        </label>
+        <label>{t('Contrast', '对比度')} <span class="val" data-val="contrast"></span>
+          <input type="range" id="contrast" min="0.2" max="3" step="0.05" value="1.1">
+        </label>
+        <label>{t('Gamma', '伽马')} <span class="val" data-val="gamma"></span>
+          <input type="range" id="gamma" min="0.3" max="3" step="0.05" value="1">
+        </label>
+        <label data-for-mode="pixels">{t('Threshold', '阈值')} <span class="val" data-val="thresh"></span>
+          <input type="range" id="thresh" min="0.1" max="0.9" step="0.01" value="0.5">
+        </label>
+        <label><input type="checkbox" id="invert"> {t('Invert', '反相')}</label>
+        <div class="row">
+          <label>{t('Ink', '墨色')} <input type="color" id="ink" value="#000000"></label>
+          <label>{t('Paper', '纸色')} <input type="color" id="paper" value="#ffffff"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{t('Export', '导出')}</legend>
+        <label>{t('PNG scale', 'PNG 放大倍数')} <span class="val" data-val="scale"></span>
+          <input type="range" id="scale" min="1" max="8" step="1" value="1">
+        </label>
+        <div class="row">
+          <button class="btn" type="button" id="png" data-frame disabled>{t('Save PNG', '保存 PNG')}</button>
+          <button class="btn" type="button" id="svg" data-frame disabled>{t('Save SVG', '保存 SVG')}</button>
+        </div>
+        <span class="note">{t(
+          'SVG draws pixel runs as one path, dots as circles and symbols as text: ready for a pen plotter or a laser cutter.',
+          'SVG 里像素连成路径，网点是圆，符号是文字：可以直接交给笔式绘图仪或激光切割机。')}</span>
+      </fieldset>
+    </div>
+
+    <div class="stage">
+      <canvas id="out" role="img" aria-label={t('The dithered picture', '抖动后的图片')}></canvas>
+      <p class="note" id="status" aria-live="polite">{t('Loading…', '加载中…')}</p>
+      <label class="note"><input type="checkbox" id="orig"> {t('Show the original below', '在下面显示原图')}</label>
+      <img id="original" alt={t('The original picture', '原图')} hidden style="margin-top:10px;max-width:100%">
+    </div>
+  </div>
+
+  <h2 data-under>{t('How the algorithms differ', '几种算法有什么不同')}</h2>
+  {zh ? (
+    <ul>
+      <li><strong>Floyd–Steinberg</strong>（1976）把误差按十六分之七、三、五、一分给四个相邻像素。色调还原得好，平坦的地方会有一点蠕虫状的纹理。</li>
+      <li><strong>Atkinson</strong> 来自最早的 Macintosh，只把八分之六的误差传下去。高光和暗部会被截掉，所以有那种干脆的高反差效果。</li>
+      <li><strong>Jarvis–Judice–Ninke，Stucki，Burkes，Sierra</strong> 把误差分到更大的范围：更平滑，更柔和，也更慢。</li>
+      <li><strong>Bayer</strong> 拿每个像素和一个递归生成的阈值矩阵比较。纹理很规整，容易并行计算，所以老游戏爱用它。</li>
+      <li><strong>蓝噪声</strong>用的是一张 64×64 的阈值图，它在你的浏览器里用 Ulichney 的 void-and-cluster 方法现场生成。点和点在各个尺度上都互相避开，所以看起来是细腻均匀的颗粒。</li>
+    </ul>
+  ) : (
+    <ul>
+      <li><strong>Floyd–Steinberg</strong> (1976) spreads the error to four neighbours with weights 7, 3, 5 and 1 sixteenths. Faithful tones, a little wormy in flat areas.</li>
+      <li><strong>Atkinson</strong>, from the original Macintosh, passes on only 6/8 of the error. Highlights and shadows clip, which gives that crisp, high-contrast look.</li>
+      <li><strong>Jarvis–Judice–Ninke, Stucki, Burkes, Sierra</strong> spread the error over larger neighbourhoods: smoother, softer, slower.</li>
+      <li><strong>Bayer</strong> compares each pixel with a recursive threshold matrix. Regular crosshatch; easy to compute in parallel, which is why old games used it.</li>
+      <li><strong>Blue noise</strong> uses a 64×64 threshold pattern built here in your browser with Ulichney's void-and-cluster method. The points avoid each other at every scale, so it reads as fine, even grain.</li>
+    </ul>
+  )}
+</Base>
+<script>
+  import '../scripts/tools/dither';
+</script>

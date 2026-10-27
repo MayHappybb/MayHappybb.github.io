@@ -1,23 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import { GROUPS } from '../../content.config';
-
-const all = (await getCollection('projects')).sort((a, b) => +b.data.date - +a.data.date);
-const groups = (Object.keys(GROUPS) as (keyof typeof GROUPS)[]).map((g) => ({ key: g, label: GROUPS[g], items: all.filter((p) => p.data.group === g) }));
+import ProjectsIndex from '../../views/ProjectsIndex.astro';
 ---
-<Base title="Projects" description="Things Haibin Meng has built since 2019: agents and small hardware, research tools, web apps, printers and robots.">
-  <h1>Projects</h1>
-  <p class="lead">Things I built, newest first in each group. Most 2026 projects were written with coding agents; each page says who did what.</p>
-  <div class="links">{groups.map((g) => <a href={`#${g.key}`}>{g.label}</a>)}</div>
-
-  {groups.map((g) => (
-    <section>
-      <h2 data-under id={g.key}>{g.label}</h2>
-      <div class="cards breakout">
-        {g.items.map((p) => <ProjectCard project={p} />)}
-      </div>
-    </section>
-  ))}
-</Base>
+<ProjectsIndex lang="en" />

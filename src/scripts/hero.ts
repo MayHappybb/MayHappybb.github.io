@@ -4,6 +4,7 @@ import rough from 'roughjs';
 import { opt, ink, pencil, paper, reduceMotion } from './sketch';
 
 const NS = 'http://www.w3.org/2000/svg';
+const ZH = () => document.documentElement.lang.startsWith('zh');
 
 function text(svg: SVGSVGElement, x: number, y: number, s: string, size = 20, color?: string, anchor = 'start', rot = 0) {
   const t = document.createElementNS(NS, 'text');
@@ -39,7 +40,7 @@ export function drawHero(svg: SVGSVGElement, animate: boolean) {
   add(rc.rectangle(300, 150, 70, 112, o()));
   add(rc.circle(335, 185, 38, o())); add(rc.circle(335, 235, 22, o()));
   add(rc.curve([[282, 140], [286, 175], [280, 205], [285, 240]], o({ strokeWidth: 2.2 })));
-  text(svg, 286, 292, 'a 10 µm foil', 20, pencil(), 'middle', -3);
+  text(svg, 286, 292, ZH() ? '10 微米的箔片' : 'a 10 µm foil', 20, pencil(), 'middle', -3);
   add(rc.line(284, 276, 284, 246, o({ stroke: pencil(), strokeWidth: 1 })));
   // little notes
   [[388, 168], [404, 150], [396, 196]].forEach(([x, y]) => {
@@ -52,7 +53,7 @@ export function drawHero(svg: SVGSVGElement, animate: boolean) {
   add(rc.rectangle(530, 182, 110, 34, o({ fill: ink(), fillStyle: 'solid', strokeWidth: 1 })));
   const t = text(svg, 585, 210, hhmm(), 30, paper(), 'middle');
   t.setAttribute('font-weight', '700'); t.setAttribute('class', 'heroclock');
-  text(svg, 585, 160, 'my desk clock', 20, pencil(), 'middle', 3);
+  text(svg, 585, 160, ZH() ? '我的桌面时钟' : 'my desk clock', 20, pencil(), 'middle', 3);
   // sparkle
   add(rc.linearPath([[672, 118], [672, 140]], o({ strokeWidth: 1.2 }))); add(rc.linearPath([[661, 129], [683, 129]], o({ strokeWidth: 1.2 })));
 

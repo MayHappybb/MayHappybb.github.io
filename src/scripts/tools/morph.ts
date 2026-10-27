@@ -3,6 +3,10 @@
 import Delaunator from 'delaunator';
 import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 import { similarity, warpInto, meanShape, borderPoints, type P, type Img } from './morph-core';
+// the page's language decides the words (Chinese pages live under /zh/)
+const ZH = document.documentElement.lang.startsWith('zh');
+const tr = (en: string, zh: string) => (ZH ? zh : en);
+
 
 const W = 480, H = 600;
 // target eye centres in the output frame
@@ -26,7 +30,7 @@ type Landmarker = { detect: (img: HTMLCanvasElement) => { faceLandmarks: { x: nu
 let landmarker: Promise<Landmarker> | null = null;
 function getLandmarker() {
   landmarker ??= (async () => {
-    say('Loading the face model (about 17 MB, once)…');
+    say(tr('Loading the face model (about 17 MB, once)…', '正在加载人脸模型（约 17 MB，只需一次）…'));
     const { FilesetResolver, FaceLandmarker } = await import('@mediapipe/tasks-vision');
     const fileset = await FilesetResolver.forVisionTasks('/vendor/mediapipe/wasm');
     return (await FaceLandmarker.createFromOptions(fileset, {
@@ -40,7 +44,7 @@ const say = (s: string) => { ui.status.textContent = s; };
 
 async function decode(file: File): Promise<HTMLCanvasElement> {
   const bmp = await createImageBitmap(file).catch(() => null);
-  if (!bmp) throw new Error(`${file.name}: this browser can't decode it (HEIC works in Safari; elsewhere use JPEG or PNG).`);
+  if (!bmp) throw new Error(tr(`${file.name}: this browser can't decode it (HEIC works in Safari; elsewhere use JPEG or PNG).`, `${file.name}：这个浏览器解不开它（HEIC 在 Safari 里可以，其他浏览器请用 JPEG 或 PNG）。`));
   const s = Math.min(1, 1600 / Math.max(bmp.width, bmp.height)); // landmarks don't need more
   const c = document.createElement('canvas'); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
   c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height); bmp.close();
@@ -50,19 +54,19 @@ async function decode(file: File): Promise<HTMLCanvasElement> {
 async function addFiles(files: FileList | File[]) {
   // MediaPipe uploads every image through WebGL, even when the model runs on the CPU
   const probe = document.createElement('canvas');
-  if (!probe.getContext('webgl2') && !probe.getContext('webgl')) { say('This tool needs WebGL, which is turned off or missing in this browser.'); return; }
+  if (!probe.getContext('webgl2') && !probe.getContext('webgl')) { say(tr('This tool needs WebGL, which is turned off or missing in this browser.', '这个工具需要 WebGL，而这个浏览器没有或者关掉了它。')); return; }
   const lm = await getLandmarker();
   for (const file of [...files].filter((f) => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name))) {
-    say(`Finding the face in ${file.name}…`);
+    say(tr(`Finding the face in ${file.name}…`, `正在 ${file.name} 里找脸…`));
     try {
       const c = await decode(file);
       const res = lm.detect(c).faceLandmarks;
-      if (!res.length) { faces.push(stub(file.name, c, 'no face found')); continue; }
+      if (!res.length) { faces.push(stub(file.name, c, tr('no face found', '没找到脸'))); continue; }
       // the largest face, by landmark bounding box
       const area = (f: { x: number; y: number }[]) => (Math.max(...f.map((p) => p.x)) - Math.min(...f.map((p) => p.x))) * (Math.max(...f.map((p) => p.y)) - Math.min(...f.map((p) => p.y)));
       const best = res.reduce((a, b) => (area(b) > area(a) ? b : a));
       faces.push(align(file.name, c, best.slice(0, 468).map((p) => [p.x * c.width, p.y * c.height] as P), res.length));
-    } catch (e) { console.error(e); faces.push({ ...stub(file.name, document.createElement('canvas'), `couldn't read it: ${(e as Error).message}`), url: '' }); }
+    } catch (e) { console.error(e); faces.push({ ...stub(file.name, document.createElement('canvas'), tr(`couldn't read it: ${(e as Error).message}`, `读不出来：${(e as Error).message}`)), url: '' }); }
   }
   refresh();
 }
@@ -86,7 +90,7 @@ function align(name: string, c: HTMLCanvasElement, pts: P[], nFaces: number): Fa
   const data = g.getImageData(0, 0, W, H).data;
   const thumb = document.createElement('canvas'); thumb.width = 120; thumb.height = 150;
   thumb.getContext('2d')!.drawImage(o, 0, 0, 120, 150);
-  return { name, url: thumb.toDataURL('image/jpeg', 0.8), aligned: { w: W, h: H, data }, pts: [...pts.map(f), ...borderPoints(W, H)], status: nFaces > 1 ? `${nFaces} faces, used the largest` : 'face found', ok: true };
+  return { name, url: thumb.toDataURL('image/jpeg', 0.8), aligned: { w: W, h: H, data }, pts: [...pts.map(f), ...borderPoints(W, H)], status: nFaces > 1 ? tr(`${nFaces} faces, used the largest`, `有 ${nFaces} 张脸，用了最大的那张`) : tr('face found', '找到了脸'), ok: true };
 }
 
 // ---------- rendering ----------
@@ -139,22 +143,22 @@ function draw() {
 function refresh() {
   ui.list.replaceChildren(...faces.map((f, i) => {
     const li = document.createElement('li');
-    const img = document.createElement('img'); img.src = f.url; img.alt = `Photo ${i + 1}`; img.width = 60; img.height = 75;
+    const img = document.createElement('img'); img.src = f.url; img.alt = tr(`Photo ${i + 1}`, `照片 ${i + 1}`); img.width = 60; img.height = 75;
     const span = document.createElement('span'); span.textContent = `${i + 1}. ${f.status}`;
-    const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn'; rm.textContent = 'remove';
-    rm.setAttribute('aria-label', `Remove photo ${i + 1}`);
+    const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn'; rm.textContent = tr('remove', '移除');
+    rm.setAttribute('aria-label', tr(`Remove photo ${i + 1}`, `移除照片 ${i + 1}`));
     rm.onclick = () => { faces.splice(i, 1); refresh(); };
     li.append(img, span, rm); return li;
   }));
   const ok = faces.map((f, i) => [f, i] as const).filter(([f]) => f.ok);
   for (const [sel, pick] of [[ui.a, 0], [ui.b, 1]] as const) {
-    const prev = sel.value; sel.replaceChildren(...ok.map(([, i]) => new Option(`photo ${i + 1}`, String(i))));
+    const prev = sel.value; sel.replaceChildren(...ok.map(([, i]) => new Option(tr(`photo ${i + 1}`, `照片 ${i + 1}`), String(i))));
     if ([...sel.options].some((o) => o.value === prev)) sel.value = prev; else if (ok[pick]) sel.value = String(ok[pick][1]);
   }
   ui.morphOpts.hidden = ui.mode.value !== 'morph';
   const n = ok.length;
-  say(n === 0 ? (faces.length ? 'No usable face yet. Try a clear, front-facing photo.' : 'Add two or more photos to begin.')
-    : n === 1 ? 'One face ready. Add another to average or morph.' : `${n} faces ready.`);
+  say(n === 0 ? (faces.length ? tr('No usable face yet. Try a clear, front-facing photo.', '还没有能用的脸。试试一张清楚的正脸照。') : tr('Add two or more photos to begin.', '添加两张或更多照片开始。'))
+    : n === 1 ? tr('One face ready. Add another to average or morph.', '一张脸准备好了。再加一张就能平均或渐变。') : tr(`${n} faces ready.`, `${n} 张脸准备好了。`));
   draw();
 }
 
@@ -172,7 +176,7 @@ ui.gif.onclick = async () => {
   const sg = small.getContext('2d', { willReadFrequently: true })!; const tmp = document.createElement('canvas'); tmp.width = W; tmp.height = H;
   const list = ui.mode.value === 'average' ? [0] : frames(40);
   for (let i = 0; i < list.length; i++) {
-    say(`Making the GIF: frame ${i + 1} of ${list.length}…`); await new Promise((r) => setTimeout(r));
+    say(tr(`Making the GIF: frame ${i + 1} of ${list.length}…`, `正在生成 GIF：第 ${i + 1} 帧，共 ${list.length} 帧…`)); await new Promise((r) => setTimeout(r));
     tmp.getContext('2d')!.putImageData(frame(list[i])!, 0, 0); sg.drawImage(tmp, 0, 0, gw, gh);
     const { data } = sg.getImageData(0, 0, gw, gh);
     const pal = quantize(data, 256); enc.writeFrame(applyPalette(data, pal), gw, gh, { palette: pal, delay: 60 });
@@ -194,8 +198,8 @@ ui.webm.onclick = async () => {
 
 let playing = 0;
 ui.play.onclick = () => {
-  if (playing) { cancelAnimationFrame(playing); playing = 0; ui.play.textContent = 'Play'; return; }
-  ui.play.textContent = 'Stop'; const t0 = performance.now();
+  if (playing) { cancelAnimationFrame(playing); playing = 0; ui.play.textContent = tr('Play', '播放'); return; }
+  ui.play.textContent = tr('Stop', '停止'); const t0 = performance.now();
   const step = (now: number) => { ui.t.value = String(0.5 - 0.5 * Math.cos(((now - t0) / 3000) * 2 * Math.PI)); draw(); playing = requestAnimationFrame(step); };
   playing = requestAnimationFrame(step);
 };

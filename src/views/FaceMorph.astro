@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import { type Lang, lp } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const t = (en: string, z: string) => (zh ? z : en);
+---
+<Base lang={lang} title={t('Face morph', '人脸融合')} wide description={t(
+  'Average several faces or morph one face into another, in your browser. Photos never leave your device.',
+  '在浏览器里把几张脸平均，或者让一张脸渐变成另一张。照片不会离开你的设备。')}>
+  <h1>{t('Face morph', '人脸融合')}</h1>
+  <p class="lead">{t('Average a few faces, or slide from one into another.', '把几张脸平均，或者让一张脸慢慢变成另一张。')}</p>
+  {zh ? (
+    <>
+      <p>我写它是为了检验一个心理学说法：平均脸更好看。每张照片先找出 468 个特征点，把眼睛对齐，再把所有特征点平均成一个形状，切成三角形，最后把每张照片变形到这个形状上混合起来。<a href={lp(lang, '/projects/facemorph/')}>方法的更多介绍</a>。</p>
+      <p class="note"><strong>你的照片只留在你的设备上。</strong>它们在这个浏览器标签页里解码和处理，从不上传。人脸模型（MediaPipe Face Landmarker）和它的运行库从本站加载，第一次大约 17 MB。</p>
+    </>
+  ) : (
+    <>
+      <p>I wrote this to test a psychology claim: that an average face looks attractive. Each photo gets 468 landmarks; the eyes are lined up; the landmarks are averaged into one shape, cut into triangles, and every photo is warped onto that shape and blended. <a href="/projects/facemorph/">More about the method</a>.</p>
+      <p class="note"><strong>Your photos stay on your device.</strong> They are decoded and processed in this browser tab and never uploaded. The face model (MediaPipe Face Landmarker) and its runtime load from this site, about 17 MB the first time.</p>
+    </>
+  )}
+
+  <div class="tool">
+    <div class="panel controls" data-frame>
+      <div class="drop" id="drop">
+        <label for="file">{zh ? <><strong>选择照片</strong>，或者拖到这里。</> : <><strong>Choose photos</strong> or drop them here.</>}</label>
+        <input type="file" id="file" accept="image/*,.heic,.heif" multiple class="sr">
+        <span class="note">{t('Front-facing, well lit, one face per photo works best.', '正脸、光线好、每张照片一张脸，效果最好。')}</span>
+      </div>
+      <ul id="faces" class="facelist" aria-label={t('Photos added', '已添加的照片')}></ul>
+
+      <fieldset>
+        <legend>{t('Make', '制作')}</legend>
+        <label>{t('Mode', '模式')}
+          <select id="mode">
+            <option value="average">{t('the average of all faces', '所有脸的平均')}</option>
+            <option value="morph">{t('a morph from one face to another', '从一张脸渐变到另一张')}</option>
+          </select>
+        </label>
+        <div id="morphopts" class="controls" hidden>
+          <div class="row">
+            <label>{t('From', '从')} <select id="fa"></select></label>
+            <label>{t('to', '到')} <select id="fb"></select></label>
+          </div>
+          <label>{t('Position', '位置')} <input type="range" id="t" min="0" max="1" step="0.01" value="0.5"></label>
+          <button class="btn" type="button" id="play" data-frame>{t('Play', '播放')}</button>
+        </div>
+        <label><input type="checkbox" id="mesh"> {t('Show the triangle mesh', '显示三角网格')}</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>{t('Save', '保存')}</legend>
+        <div class="row">
+          <button class="btn" type="button" id="png" data-frame disabled>PNG</button>
+          <button class="btn" type="button" id="gif" data-frame disabled>GIF</button>
+          <button class="btn" type="button" id="webm" data-frame disabled>{t('Video', '视频')}</button>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="stage">
+      <canvas id="out" role="img" aria-label={t('The averaged or morphed face', '平均或融合后的脸')} style="width:min(100%, 480px);aspect-ratio:4/5;background:var(--wash)"></canvas>
+      <p class="note" id="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <h2 data-under>{t('Limits', '局限')}</h2>
+  {zh ? (
+    <ul>
+      <li>侧得很厉害的脸变形后会很难看：特征点没有问题，但一张三角网格藏不住半张脸看不见这件事。</li>
+      <li>眼镜、头发和背景也会被平均；只有脸是对齐的，所以它们会糊掉。</li>
+      <li>只用那些乐意你这么做的人的照片。</li>
+    </ul>
+  ) : (
+    <ul>
+      <li>Faces turned far to the side warp badly: the landmarks are fine, but one triangle mesh can't hide that half the face is missing.</li>
+      <li>Glasses, hair and background are averaged too; only the face is aligned, so they blur.</li>
+      <li>Only use photos of people who are happy for you to do this.</li>
+    </ul>
+  )}
+</Base>
+<style is:global>
+  .facelist { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+  .facelist li { display:grid; grid-template-columns:60px 1fr auto; gap:10px; align-items:center; font-size:15px; }
+  .facelist img { width:60px; height:75px; object-fit:cover; border-radius:4px; }
+  .facelist .btn { font-size:16px; padding:2px 8px; }
+</style>
+<script>
+  import '../scripts/tools/morph';
+</script>

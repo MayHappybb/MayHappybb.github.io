@@ -3,13 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-cjk-fonts.mjs && node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
+    "predev": "node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/build-cjk-fonts.mjs && node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
-    "build": "astro build",
+    "prebuild": "node scripts/copy-vendor.mjs && node scripts/build-kit.mjs",
+    "build": "astro build && node scripts/build-cjk-fonts.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test test/*.test.ts"
+    "test": "node --test test/*.test.ts",
+    "fonts": "npm run prebuild && astro build && node scripts/build-cjk-fonts.mjs --write"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

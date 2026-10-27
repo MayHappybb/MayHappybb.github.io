@@ -1,0 +1,19 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import type { Note } from '../lib/content';
+import { type Lang, L, UI, lp, dateFmt } from '../i18n';
+
+interface Props { lang: Lang; note: Note }
+const { lang, note } = Astro.props;
+const { Content } = await render(note.entry);
+---
+<Base lang={lang} title={note.data.title} description={note.data.summary}>
+  <article>
+    <p class="small"><a href={lp(lang, '/notes/')}>{L(lang, UI.notes)}</a> · <time datetime={note.data.date.toISOString().slice(0, 10)}>{dateFmt(lang, note.data.date)}</time></p>
+    <h1>{note.data.title}</h1>
+    <p class="lead">{note.data.summary}</p>
+    <div class="prose"><Content /></div>
+  </article>
+  <p style="margin-top:40px"><a href={lp(lang, '/notes/')}>{L(lang, UI.allNotes)}</a></p>
+</Base>

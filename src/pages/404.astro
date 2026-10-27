@@ -1,8 +1,12 @@
 ---
+// GitHub Pages serves this one file for every missing address, English or Chinese, so it says both.
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Not found">
+<Base title="Not found · 页面不存在" bilingual={false}>
   <h1>Nothing here.</h1>
   <p class="lead">The radar looked, but this page doesn't reflect anything.</p>
   <p><a href="/">Back to the start</a></p>
+  <h2 lang="zh-CN">这里什么都没有。</h2>
+  <p class="lead" lang="zh-CN">雷达找过了，这个页面没有反射回任何东西。</p>
+  <p lang="zh-CN"><a href="/zh/">回到首页</a></p>
 </Base>

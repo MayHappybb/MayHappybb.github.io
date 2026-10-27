@@ -1,26 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Snapshot from '../../components/Snapshot.astro';
-import Film from '../../components/Film.astro';
-import Base from '../../layouts/Base.astro';
-import { GROUPS } from '../../content.config';
+import Project from '../../views/Project.astro';
+import { getProjects } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map((p) => ({ params: { id: p.id }, props: { project: p } }));
+  return (await getProjects('en')).map((x) => ({ params: { id: x.id }, props: { project: x } }));
 }
 const { project } = Astro.props;
-const d = project.data;
-const { Content } = await render(project);
 ---
-<Base title={d.title} description={d.summary}>
-  <p class="small"><a href={`/projects/#${d.group}`}>{GROUPS[d.group]}</a></p>
-  <h1>{d.title}</h1>
-  <p class="lead">{d.summary}</p>
-  <p class="meta">{d.year}{d.status && <> · {d.status}</>}{d.built && <><br>{d.built}</>}</p>
-  {d.links.length > 0 && <div class="links">{d.links.map((l) => <a href={l.href}>{l.label}</a>)}</div>}
-  {d.image && <Snapshot src={d.image} alt={d.imageAlt ?? ''} caption={d.caption} seed={project.id} loading="eager" />}
-  {d.film && <Film />}
-  <div class="prose"><Content /></div>
-  <p style="margin-top:40px"><a href="/projects/">All projects</a></p>
-</Base>
+<Project lang="en" project={project} />

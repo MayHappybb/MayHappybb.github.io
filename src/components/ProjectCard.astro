@@ -1,11 +1,12 @@
 ---
 import Snapshot from './Snapshot.astro';
-import type { CollectionEntry } from 'astro:content';
+import type { Project } from '../lib/content';
+import { type Lang, lp } from '../i18n';
 
-interface Props { project: CollectionEntry<'projects'>; showImage?: boolean }
-const { project, showImage = true } = Astro.props;
+interface Props { project: Project; lang: Lang; showImage?: boolean }
+const { project, lang, showImage = true } = Astro.props;
 const d = project.data;
-const href = `/projects/${project.id}/`;
+const href = lp(lang, `/projects/${project.id}/`);
 ---
 <article class="card" data-frame>
   {showImage && d.image && (

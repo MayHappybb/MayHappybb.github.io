@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import { ideas } from '../data/ideas';
+import { getNotes } from '../lib/content';
+import { type Lang, type T, L, UI, lp, dateFmt } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const notes = (await getNotes(lang)).sort((a, b) => +b.data.date - +a.data.date);
+const label: Record<string, T> = {
+  done: { en: 'became something', zh: '已经做成' },
+  tried: { en: 'tried', zh: '试过' },
+  open: { en: 'still an idea', zh: '还只是想法' },
+  dropped: { en: 'dropped', zh: '放弃了' },
+};
+---
+<Base lang={lang} title={L(lang, UI.notes)} description={zh ? '研究和动手过程中的小故事，还有一罐点子。' : 'Short stories from research and building, and the ideas jar.'}>
+  <h1>{L(lang, UI.notes)}</h1>
+  <p class="lead">{zh ? '实验室和书桌上的小故事，还有一罐点子。' : 'Short stories from the lab and the desk, and a jar of ideas.'}</p>
+
+  <ul class="list">
+    {notes.map((n) => (
+      <li data-icon={n.data.icon}>
+        <span class="title"><a href={lp(lang, `/notes/${n.id}/`)}>{n.data.title}</a></span>
+        {n.data.summary} <span class="where">{dateFmt(lang, n.data.date)}</span>
+      </li>
+    ))}
+  </ul>
+
+  <h2 data-under id="ideas">{zh ? '点子罐' : 'Ideas jar'}</h2>
+  {zh ? (
+    <p>我想到点子就马上记下来。「ideas 的产生离不开必要的知识，理论基础建立了，一旦缺失的最后一块浮现，则 idea 就自动补全了。」打勾的已经变成了论文、工具或项目。</p>
+  ) : (
+    <p>I write ideas down as soon as they appear. Knowledge is what makes them: once the groundwork is there, the last missing piece shows up and the idea completes itself. A tick means it became a paper, a tool or a project.</p>
+  )}
+  <ul class="list jar">
+    {ideas.map((i) => (
+      <li data-done={i.state === 'done' ? '' : undefined}>
+        {i.href ? <a href={lp(lang, i.href)}>{L(lang, i.text)}</a> : L(lang, i.text)}
+        <span class="when"> {[i.date, L(lang, i.note) || (i.state !== 'open' ? L(lang, label[i.state]) : '')].filter(Boolean).join(' · ')}</span>
+        {i.state === 'dropped' && <span class="sr"> ({L(lang, label.dropped)})</span>}
+        {i.state === 'done' && <span class="sr"> ({zh ? '已完成' : 'done'})</span>}
+      </li>
+    ))}
+  </ul>
+</Base>

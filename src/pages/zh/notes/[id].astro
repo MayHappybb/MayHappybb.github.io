@@ -1,0 +1,10 @@
+---
+import Note from '../../../views/Note.astro';
+import { getNotes } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  return (await getNotes('zh')).map((x) => ({ params: { id: x.id }, props: { note: x } }));
+}
+const { note } = Astro.props;
+---
+<Note lang="zh" note={note} />

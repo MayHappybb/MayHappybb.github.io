@@ -1,0 +1,25 @@
+---
+import { render } from 'astro:content';
+import Snapshot from '../components/Snapshot.astro';
+import Film from '../components/Film.astro';
+import Base from '../layouts/Base.astro';
+import { GROUPS } from '../content.config';
+import type { Project } from '../lib/content';
+import { type Lang, L, UI, lp } from '../i18n';
+
+interface Props { lang: Lang; project: Project }
+const { lang, project } = Astro.props;
+const d = project.data;
+const { Content } = await render(project.entry);
+---
+<Base lang={lang} title={d.title} description={d.summary}>
+  <p class="small"><a href={lp(lang, `/projects/#${d.group}`)}>{L(lang, GROUPS[d.group])}</a></p>
+  <h1>{d.title}</h1>
+  <p class="lead">{d.summary}</p>
+  <p class="meta">{d.year}{d.status && <> · {d.status}</>}{d.built && <><br>{d.built}</>}</p>
+  {d.links.length > 0 && <div class="links">{d.links.map((l) => <a href={lp(lang, l.href)}>{l.label}</a>)}</div>}
+  {d.image && <Snapshot src={d.image} alt={d.imageAlt ?? ''} caption={d.caption} seed={project.id} loading="eager" />}
+  {d.film && <Film lang={lang} />}
+  <div class="prose"><Content /></div>
+  <p style="margin-top:40px"><a href={lp(lang, '/projects/')}>{L(lang, UI.allProjects)}</a></p>
+</Base>

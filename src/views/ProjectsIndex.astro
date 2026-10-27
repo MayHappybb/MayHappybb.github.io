@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { GROUPS } from '../content.config';
+import { getProjects } from '../lib/content';
+import { type Lang, L } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const all = (await getProjects(lang)).sort((a, b) => +b.data.date - +a.data.date);
+const groups = (Object.keys(GROUPS) as (keyof typeof GROUPS)[]).map((g) => ({ key: g, label: L(lang, GROUPS[g]), items: all.filter((x) => x.data.group === g) }));
+---
+<Base lang={lang} title={zh ? '项目' : 'Projects'} description={zh
+  ? '孟海彬 2019 年以来做过的东西：智能体和小硬件、科研工具、网页应用、打印机和机器人。'
+  : 'Things Haibin Meng has built since 2019: agents and small hardware, research tools, web apps, printers and robots.'}>
+  <h1>{zh ? '项目' : 'Projects'}</h1>
+  <p class="lead">{zh
+    ? '我做过的东西，每组按时间从新到旧排。2026 年的项目大多是和编程智能体一起写的，每页都写明了谁做了什么。'
+    : 'Things I built, newest first in each group. Most 2026 projects were written with coding agents; each page says who did what.'}</p>
+  <div class="links">{groups.map((g) => <a href={`#${g.key}`}>{g.label}</a>)}</div>
+
+  {groups.map((g) => (
+    <section>
+      <h2 data-under id={g.key}>{g.label}</h2>
+      <div class="cards breakout">
+        {g.items.map((x) => <ProjectCard project={x} lang={lang} />)}
+      </div>
+    </section>
+  ))}
+</Base>

@@ -1,48 +1,76 @@
 ---
 import '../styles/global.css';
 import { SITE, NAV } from '../data/site';
+import { type Lang, L, UI, htmlLang, lp, twin } from '../i18n';
 
 interface Props {
+  lang?: Lang;
   title?: string;
   description?: string;
   wide?: boolean;
+  /** false for pages without a twin in the other language (the shared 404) */
+  bilingual?: boolean;
 }
-const { title, description = SITE.description, wide = false } = Astro.props;
-const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name}`;
+const { lang = 'en', title, description, wide = false, bilingual = true } = Astro.props;
+const zh = lang === 'zh';
+const name = L(lang, SITE.name);
+const fullTitle = title ? `${title} · ${name}` : name;
+const desc = description ?? L(lang, SITE.description);
 const path = Astro.url.pathname;
-const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const home = lp(lang, '/');
+const current = (href: string) => (href === home ? path === home : path.startsWith(href));
 const canonical = new URL(path, Astro.site);
+const other = twin(path);
+const enHref = new URL(zh ? other.href : path, Astro.site);
+const zhHref = new URL(zh ? path : other.href, Astro.site);
 ---
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang(lang)}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{fullTitle}</title>
-  <meta name="description" content={description}>
+  <meta name="description" content={desc}>
   <link rel="canonical" href={canonical}>
+  {bilingual && <link rel="alternate" hreflang="en" href={enHref}>}
+  {bilingual && <link rel="alternate" hreflang="zh-CN" href={zhHref}>}
+  {bilingual && <link rel="alternate" hreflang="x-default" href={enHref}>}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- Chinese glyphs, subset per language by scripts/build-cjk-fonts.mjs -->
+  <link rel="stylesheet" href={`/fonts/cjk/${zh ? 'zh' : 'en'}.css`}>
   <meta property="og:title" content={fullTitle}>
-  <meta property="og:description" content={description}>
+  <meta property="og:description" content={desc}>
   <meta property="og:type" content="website">
   <meta property="og:url" content={canonical}>
+  <meta property="og:locale" content={zh ? 'zh_CN' : 'en_GB'}>
   <meta name="theme-color" content="#ffffff">
   <script is:inline>
     try { if (localStorage.getItem('paper') === 'black' || location.hash === '#dark') document.documentElement.classList.add('dark'); } catch (e) {}
   </script>
+  {bilingual && (
+    <script is:inline define:vars={{ pageLang: lang, otherHref: other.href }}>
+      // a language picked with the 中文/EN link is kept: open this page in that language
+      try { var want = localStorage.getItem('lang'); if (want && want !== pageLang) location.replace(otherHref + location.search + location.hash); } catch (e) {}
+    </script>
+  )}
   <slot name="head" />
 </head>
 <body>
-  <a class="skip" href="#content">Skip to content</a>
+  <a class="skip" href="#content">{L(lang, UI.skip)}</a>
   <header class="top">
-    <a class="brand" href="/">Haibin Meng</a>
-    <nav aria-label="Main">
+    <a class="brand" href={home}>{name}</a>
+    <nav aria-label={L(lang, UI.navLabel)}>
       <ul class="nav">
-        {NAV.map((n) => <li><a href={n.href} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a></li>)}
+        {NAV.map((n) => { const href = lp(lang, n.href); return <li><a href={href} aria-current={current(href) ? 'page' : undefined}>{L(lang, n.label)}</a></li>; })}
       </ul>
     </nav>
-    <button class="switch" id="switch" type="button" aria-label="Switch between white and black paper" aria-pressed="false">
-      <svg id="switchsvg" viewBox="0 0 30 52" aria-hidden="true"></svg><span id="switchlabel">lights off</span>
+    {bilingual && (
+      <a class="langswitch" href={other.href} data-lang={other.lang} hreflang={htmlLang(other.lang)} lang={htmlLang(other.lang)}
+         aria-label={zh ? 'Read this page in English' : '用中文阅读本页'}>{zh ? 'EN' : '中文'}</a>
+    )}
+    <button class="switch" id="switch" type="button" aria-label={L(lang, UI.switchAria)} aria-pressed="false"
+            data-off={L(lang, UI.lightsOff)} data-on={L(lang, UI.lightsOn)}>
+      <svg id="switchsvg" viewBox="0 0 30 52" aria-hidden="true"></svg><span id="switchlabel">{L(lang, UI.lightsOff)}</span>
     </button>
   </header>
   <main id="content" class={wide ? 'wide' : undefined}>
@@ -50,8 +78,8 @@ const canonical = new URL(path, Astro.site);
   </main>
   <footer class="foot">
     <div data-rule></div>
-    <p>Say hi: <a href={`mailto:${SITE.email}`}>{SITE.email}</a> &nbsp; <a href={SITE.github}>GitHub</a> &nbsp; <a href={SITE.scholar}>Scholar</a> &nbsp; <a href={SITE.orcid}>ORCID</a></p>
-    <p class="small">Drawn with rough.js, set in Gaegu and Klee One. Built with Astro and coding agents. © {new Date().getFullYear()} Haibin Meng.</p>
+    <p>{L(lang, UI.sayHi)} <a href={`mailto:${SITE.email}`}>{SITE.email}</a> &nbsp; <a href={SITE.github}>GitHub</a> &nbsp; <a href={SITE.scholar}>Scholar</a> &nbsp; <a href={SITE.orcid}>ORCID</a></p>
+    <p class="small">{L(lang, UI.credits)} © {new Date().getFullYear()} {name}.</p>
   </footer>
   <script>
     import { initSketch } from '../scripts/sketch';
