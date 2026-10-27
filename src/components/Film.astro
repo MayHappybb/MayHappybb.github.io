@@ -31,7 +31,7 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, 
   .chapters { list-style:none; padding:0; margin:4px 0 24px; }
   .chapters button { background:none; border:0; color:var(--ink); font:inherit; font-size:16px; line-height:1.5; text-align:left; padding:3px 4px 3px 4.2em; text-indent:-3.6em; cursor:pointer; width:100%; }
   .chapters button:hover, .chapters button:focus-visible { background:var(--mark); }
-  .chapters .t { font-family:"Gaegu"; font-weight:700; font-size:19px; color:var(--pencil); font-variant-numeric:tabular-nums; display:inline-block; min-width:3.2em; }
+  .chapters .t { font-family:var(--hand); font-weight:700; font-size:19px; color:var(--pencil); font-variant-numeric:tabular-nums; display:inline-block; min-width:3.2em; }
 </style>
 <script>
   document.querySelectorAll<HTMLOListElement>('ol.chapters').forEach((list) => {

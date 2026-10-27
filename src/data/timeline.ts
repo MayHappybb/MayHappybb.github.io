@@ -53,7 +53,7 @@ export const timeline: { year: string; items: string[] }[] = [
     year: '2026',
     items: [
       'MSSP paper published. Start piano lessons.',
-      'Build a lot with coding agents: a venue-booking bot, a face-morphing program, agent-designed clock faces, a desk LCD any AI can draw on, over-the-air ESP32 programming, a straight-line car challenge.',
+      'Build a lot with coding agents: a face-morphing program, agent-designed clock faces, a desk LCD any AI can draw on, over-the-air ESP32 programming, a straight-line car challenge.',
       'September: intern on bilibili\'s AI video-creation agent team.',
     ],
   },

@@ -7,7 +7,7 @@ const NS = 'http://www.w3.org/2000/svg';
 
 function text(svg: SVGSVGElement, x: number, y: number, s: string, size = 20, color?: string, anchor = 'start', rot = 0) {
   const t = document.createElementNS(NS, 'text');
-  t.setAttribute('x', String(x)); t.setAttribute('y', String(y)); t.setAttribute('font-family', 'Gaegu');
+  t.setAttribute('x', String(x)); t.setAttribute('y', String(y)); t.setAttribute('font-family', 'Gaegu, "ZCOOL KuaiLe", cursive');
   t.setAttribute('font-size', String(size)); t.setAttribute('fill', color || ink()); t.setAttribute('text-anchor', anchor);
   if (rot) t.setAttribute('transform', `rotate(${rot} ${x} ${y})`);
   t.textContent = s; svg.appendChild(t); return t;

@@ -16,5 +16,7 @@ for (const f of ['gaegu/latin-400', 'gaegu/latin-700', 'klee-one/latin-400', 'kl
   for (const [, file] of css.matchAll(/url\(\.\/files\/([^)]+)\)/g)) cpSync(`node_modules/@fontsource/${f.split('/')[0]}/files/${file}`, `${OUT}/fonts/${file}`);
   fonts += css.replaceAll('./files/', 'fonts/');
 }
+// the Chinese faces (subset by build-cjk-fonts.mjs) live at the site root: make their URLs absolute
+fonts += readFileSync('src/styles/cjk-fonts.css', 'utf8').replaceAll('url(/fonts/', 'url(https://mayhappybb.github.io/fonts/');
 writeFileSync(`${OUT}/sketch.css`, fonts + readFileSync('src/styles/sketch-base.css', 'utf8'));
 console.log('built the sketch kit in', OUT);

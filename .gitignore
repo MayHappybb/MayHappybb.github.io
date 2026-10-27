@@ -7,3 +7,4 @@ dist/
 *.heic
 public/vendor/mediapipe/wasm/
 public/kit/
+fonts-src/
